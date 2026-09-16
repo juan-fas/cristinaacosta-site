@@ -41,7 +41,7 @@ import CalcShell from '../../components/calc/CalcShell.astro';
   const q = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
   const out = (k: string) => q<HTMLElement>(`[data-out="${k}"]`);
   const val = (id: string) => parseNum(q<HTMLInputElement>(`#${id}`).value);
-  // Alberta Land Titles fees. VERIFY before launch: base fee and per-$5,000 rate for transfers and mortgages (schedule changed in 2024).
+  // Alberta Land Titles fees: $50 base + $5 per $5,000 of value for transfers and mortgages, effective 2024-10-20 (verified 2026-09-16).
   const albertaTransfer = (v: number) => 50 + Math.ceil(v / 5000) * 5;
   const albertaMortgage = (v: number) => 50 + Math.ceil(v / 5000) * 5;
   // Ontario provincial LTT for comparison (excluding Toronto and rebates).

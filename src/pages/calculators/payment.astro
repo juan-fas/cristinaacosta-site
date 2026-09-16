@@ -55,6 +55,7 @@ import CalcShell from '../../components/calc/CalcShell.astro';
     const warn = out('warn');
     if (res.belowMinDown) { warn.textContent = `A down payment of at least ${fmtMoney(res.minDown)} is required at this price.`; warn.hidden = false; }
     else if (p >= 1_500_000 && res.downPct < 0.2) { warn.textContent = 'From $1.5 million the minimum down payment is 20%; mortgage insurance is not available.'; warn.hidden = false; }
+    else if (a > 25 && res.premium > 0) { warn.textContent = 'A 30-year amortization on an insured mortgage is available to first-time buyers and buyers of new builds, and carries a slightly higher premium (included above).'; warn.hidden = false; }
     else warn.hidden = true;
     setSummary(document, 'payment', { 'Purchase price': fmtMoney(p), 'Down payment': `${fmtMoney(d)} (${(res.downPct * 100).toFixed(1)}%)`, 'Rate': `${r.toFixed(2)}%`, 'Amortization': `${a} years`, 'Frequency': per, 'Mortgage insurance': res.premium > 0 ? fmtMoney(res.premium) : 'None', 'Total borrowed': fmtMoney(res.totalMortgage), 'Payment': `${fmtMoney(res.payment)} / ${per}`, 'Total interest': fmtMoney(res.totalInterest) });
   }

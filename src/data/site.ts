@@ -136,7 +136,7 @@ export const pathCopy: Record<SituationKey, string[]> = {
 /* Regulatory constants used by every calculator. Verify against the official source
    before each deploy and update the date. Shown on every result. */
 export const constants = {
-  verified: '2026-09-16',
+  verified: '2026-09-16', // CMHC premium table and $1.5M cap checked 2026-09-16 against cmhc-schl.gc.ca; 30-year insured amortization is limited to first-time buyers and new builds
   stressTestFloor: 0.0525,   // OSFI minimum qualifying rate floor
   stressTestBuffer: 0.02,    // contract rate + 2%
   gdsLimit: 0.39,
@@ -150,6 +150,6 @@ export const constants = {
     { minPct: 0.10, std: 0.031, ext: 0.033 },
     { minPct: 0.05, std: 0.040, ext: 0.042 },
   ],
-  // Alberta land title registration (no land transfer tax): base + per $5,000 of value. TODO verify current schedule.
-  albertaTitle: { transferBase: 50, transferPer5000: 2, mortgageBase: 50, mortgagePer5000: 1.5 },
+  // Alberta Land Titles registration (no land transfer tax): $50 base + $5 per $5,000 of value for both transfers and mortgages, effective 2024-10-20 (verified 2026-09-16).
+  albertaTitle: { transferBase: 50, transferPer5000: 5, mortgageBase: 50, mortgagePer5000: 5 },
 };
