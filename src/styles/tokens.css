@@ -7,7 +7,7 @@
 :root {
   /* brand */
   --blue-900: #0B1C57; --blue-800: #102570; --blue-700: #163191; --blue-600: #2A47A8; --blue-500: #4560BC; --blue-100: #DDE3F5; --blue-050: #EEF1FA;
-  --beige-700: #8E7E6A; --beige-500: #BAAA97; --beige-300: #D6CBBB; --beige-200: #E4DCD0; --beige-100: #EFE9E0;
+  --beige-700: #6E6050; /* darkened from the manual’s #8E7E6A so small text passes 4.5:1 on cream */ --beige-500: #BAAA97; --beige-300: #D6CBBB; --beige-200: #E4DCD0; --beige-100: #EFE9E0;
   --cream: #F4EFE9; --paper: #FBF9F6; --ink: #191714; --ink-700: #3B3733; --ink-500: #5D5852;
   --gold: #C9952A; --slate: #8A97A6;
   --ok: #2F6B3F; --ok-bg: #E4EFE6; --warn: #9A6A10; --warn-bg: #F6ECD6; --err: #9C2F2F; --err-bg: #F7E3E3;

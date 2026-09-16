@@ -55,12 +55,12 @@ const schema = {
           {bio.refuses && <div class="refuse"><span class="eyebrow">What I refuse to do</span><p>{bio.refuses}</p></div>}
           {bio.story && <div class="story"><span class="eyebrow">{bio.story.h}</span>{bio.story.body.map((t) => <p>{t}</p>)}</div>}
         </div>
-        <aside class="side">
+        <div class="side">
           <span class="eyebrow">Who I help most</span>
           <ul class="checks">{bio.helps.map((h) => <li><Icon name="check" size={20} /><span>{h}</span></li>)}</ul>
           {bio.languagesNote && <p class="small" style="margin-top:var(--s-4)">{bio.languagesNote}</p>}
           <p class="small" style="margin-top:var(--s-4)">Licence {p.licence}, verifiable on the <a href={brokerage.regulatorUrl} rel="noopener" target="_blank">RECA website</a>.</p>
-        </aside>
+        </div>
       </div>
     </section>
 

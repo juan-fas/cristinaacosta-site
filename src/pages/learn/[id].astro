@@ -32,14 +32,14 @@ const related = (await getCollection('learn')).filter((x) => x.id !== g.id).slic
       <p class="byline">By <a href={`/about/${author.slug}`}>{author.name}</a>, {author.title} · Published {fmt(g.data.published)} · Verified {fmt(g.data.verified)}</p>
     </div></header>
     <div class="section-tight"><div class="container narrow prose"><Content /></div></div>
-    <aside class="section-tight tail"><div class="container narrow">
+    <section class="section-tight tail" aria-label="Sources and next steps"><div class="container narrow">
       {g.data.sources.length > 0 && <div><span class="eyebrow">Sources</span><ul>{g.data.sources.map((s) => <li><a href={s.url} target="_blank" rel="noopener">{s.name}</a></li>)}</ul></div>}
       <div class="ctas">
         {g.data.tool && <a class="btn btn-primary" href={g.data.tool}>Open the related calculator</a>}
         {g.data.situation && <a class="btn btn-secondary" href={g.data.situation}>See the steps for this situation</a>}
       </div>
       <p class="small">General information, not advice for your situation and not an offer of credit. Rules change; the verified date above is when this guide was last checked.</p>
-    </div></aside>
+    </div></section>
     <section class="section-tight more"><div class="container">
       <span class="eyebrow">More guides</span>
       <div class="grid">{related.map((r) => <a class="card" href={`/learn/${r.id}`}><h2>{r.data.title}</h2><p>{r.data.description}</p><span class="go">Read</span></a>)}</div>
