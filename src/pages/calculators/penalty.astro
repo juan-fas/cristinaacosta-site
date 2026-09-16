@@ -1,0 +1,59 @@
+---
+import Base from '../../layouts/Base.astro';
+import CalcShell from '../../components/calc/CalcShell.astro';
+---
+<Base title="Mortgage Penalty Estimator" description="Estimate the penalty to break a Canadian mortgage: three months' interest for variable, the greater of three months' interest and the interest rate differential for fixed, and why every lender's number is different.">
+  <CalcShell tool="penalty" eyebrow="Penalty to break my mortgage" title="What would it cost to break the mortgage early?" lead="Variable mortgages usually charge three months of interest. Fixed mortgages charge the greater of that and the interest rate differential, and every lender calculates the differential its own way, which is why the range below can be wide. Ask your lender for a written quote; we check it." resultLabel="Estimated penalty" disclaimer="Estimate only. Your lender's formula, posted rates and discounts decide the real number.">
+    <Fragment slot="inputs">
+      <div class="field"><label for="pe-bal">Current balance</label><div class="range"><input type="range" id="pe-bal" min="50000" max="1500000" step="5000" value="360000" /><input class="input num" id="pe-bal-n" inputmode="numeric" aria-label="Balance, typed" /></div></div>
+      <div class="field"><span class="label">Mortgage type</span><div class="choice"><label><input type="radio" name="ptype" value="fixed" checked /> Fixed</label><label><input type="radio" name="ptype" value="variable" /> Variable</label></div></div>
+      <div class="two">
+        <div class="field"><label for="pe-rate">Your contract rate</label><div class="range"><input type="range" id="pe-rate" min="1" max="9" step="0.05" value="5.29" /><input class="input num" id="pe-rate-n" inputmode="decimal" aria-label="Contract rate, typed" /></div></div>
+        <div class="field"><label for="pe-months">Months remaining in term</label><div class="range"><input type="range" id="pe-months" min="1" max="60" step="1" value="26" /><input class="input num" id="pe-months-n" inputmode="numeric" aria-label="Months remaining, typed" /></div></div>
+      </div>
+      <div class="group" data-fixed-only><span class="eyebrow">For fixed mortgages</span>
+        <div class="two">
+          <div class="field"><label for="pe-comp">Lender’s current rate for the remaining term</label><div class="range"><input type="range" id="pe-comp" min="1" max="9" step="0.05" value="4.19" /><input class="input num" id="pe-comp-n" inputmode="decimal" aria-label="Comparison rate, typed" /></div><span class="help">Use the lender’s posted rate for a term closest to the months left. Big banks often use posted rates, which makes the differential larger.</span></div>
+          <div class="field"><label for="pe-disc">Discount you received off the posted rate</label><div class="range"><input type="range" id="pe-disc" min="0" max="3" step="0.05" value="0" /><input class="input num" id="pe-disc-n" inputmode="decimal" aria-label="Discount, typed" /></div><span class="help">Some lenders subtract your original discount from the comparison rate. Set to 0 if unsure.</span></div>
+        </div>
+      </div>
+    </Fragment>
+    <Fragment slot="result">
+      <div class="big"><span class="num" data-out="penalty">$0</span></div>
+      <p class="explain" data-out="explain"></p>
+      <dl>
+        <div><dt>Three months’ interest</dt><dd class="num" data-out="three"></dd></div>
+        <div><dt>Interest rate differential</dt><dd class="num" data-out="ird"></dd></div>
+        <div><dt>Method that applies</dt><dd data-out="method"></dd></div>
+      </dl>
+      <div class="btn-row"><a class="btn btn-inverse" href="#email">Email me these numbers</a><a class="btn btn-outline-inverse" href="/mortgages/refinance">Is refinancing worth it?</a></div>
+    </Fragment>
+  </CalcShell>
+</Base>
+<script>
+  import { fmtMoney } from '../../lib/mortgage';
+  import { pair, animateMoney, num, radio, setSummary } from '../../lib/calc-ui';
+  const root = document.querySelector<HTMLElement>('[data-calc="penalty"]')!;
+  const q = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const out = (k: string) => q<HTMLElement>(`[data-out="${k}"]`);
+  function render() {
+    const bal = num(root, 'pe-bal'), rate = num(root, 'pe-rate'), months = num(root, 'pe-months'), comp = num(root, 'pe-comp'), disc = num(root, 'pe-disc');
+    const fixed = radio(root, 'ptype', 'fixed') === 'fixed';
+    q<HTMLElement>('[data-fixed-only]').hidden = !fixed;
+    const three = bal * (rate / 100) * (3 / 12);
+    const compAdj = Math.max(0, comp - disc);
+    const ird = fixed ? Math.max(0, bal * ((rate - compAdj) / 100) * (months / 12)) : 0;
+    const penalty = fixed ? Math.max(three, ird) : three;
+    animateMoney(out('penalty'), penalty);
+    animateMoney(out('three'), three);
+    out('ird').textContent = fixed ? fmtMoney(ird) : 'Not applicable';
+    out('method').textContent = fixed ? (ird > three ? 'Interest rate differential' : 'Three months’ interest') : 'Three months’ interest';
+    out('explain').textContent = fixed
+      ? (ird > three ? `Because your rate is above the lender’s current rate, the differential applies: ${fmtMoney(bal)} × ${(rate - compAdj).toFixed(2)}% × ${months} months.` : `Three months of interest at ${rate.toFixed(2)}% is the larger amount here.`)
+      : `Variable mortgages usually charge three months of interest at your current rate.`;
+    setSummary(document, 'penalty', { 'Balance': fmtMoney(bal), 'Type': fixed ? 'Fixed' : 'Variable', 'Contract rate': `${rate.toFixed(2)}%`, 'Months remaining': String(months), 'Three months interest': fmtMoney(three), 'IRD': fixed ? fmtMoney(ird) : 'n/a', 'Estimated penalty': fmtMoney(penalty) });
+  }
+  pair(q('#pe-bal'), q('#pe-bal-n'), render); pair(q('#pe-rate'), q('#pe-rate-n'), render, 2); pair(q('#pe-months'), q('#pe-months-n'), render); pair(q('#pe-comp'), q('#pe-comp-n'), render, 2); pair(q('#pe-disc'), q('#pe-disc-n'), render, 2);
+  root.querySelectorAll('input[name="ptype"]').forEach((el) => el.addEventListener('change', render));
+  render();
+</script>

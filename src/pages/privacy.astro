@@ -1,0 +1,44 @@
+---
+import Base from '../layouts/Base.astro';
+import { brokerage, site } from '../data/site';
+---
+<Base title="Privacy" description="What cristinaacosta.ca collects, where it is stored, who receives it, and how to withdraw consent.">
+  <section class="section legal">
+    <div class="container narrow">
+      <span class="eyebrow">Privacy notice for this website</span>
+      <h1>What this site collects, and what happens to it.</h1>
+      <p class="lead">This notice covers cristinaacosta.ca. Once you become a client, your information is handled under the brokerage’s privacy notice, linked below, which complies with Canada’s Personal Information Protection and Electronic Documents Act and Alberta’s Personal Information Protection Act.</p>
+
+      <h2>What we collect here</h2>
+      <ul>
+        <li><strong>Forms.</strong> When you send a message, ask for a renewal reminder or request a calculator result by email, we collect the name, email or phone number and the details you type, plus which associate you chose.</li>
+        <li><strong>Calculators.</strong> The figures you enter stay in your browser. They are only sent to us if you ask for the result by email or send a message.</li>
+        <li><strong>Analytics.</strong> We use Google Analytics to understand which pages are used. It sets cookies and records anonymized usage data. It does not identify you to us.</li>
+      </ul>
+
+      <h2>Where it is stored and who sees it</h2>
+      <ul>
+        <li>Form submissions are stored by Netlify, our website host, on servers in the United States, and are emailed to the associate you chose and to {site.email}.</li>
+        <li>Calculator result emails are sent through a transactional email provider on our behalf.</li>
+        <li>When you become a client, your information moves to the brokerage’s systems and the Mortgage Alliance application platform, and this website’s copy is deleted within twelve months.</li>
+        <li>We never sell, rent or trade your information.</li>
+      </ul>
+
+      <h2>Consent and withdrawing it</h2>
+      <p>Every form on this site has an unticked consent box. Ticking it lets us contact you about your enquiry and, where you asked for it, about your renewal. You can withdraw consent at any time by replying "unsubscribe" to any message, or by writing to <a href={`mailto:${site.email}`}>{site.email}</a>. Emails you request, such as a calculator result, are sent once and do not add you to any list.</p>
+
+      <h2>Your rights</h2>
+      <p>You can ask what personal information we hold about you, ask us to correct it, or ask us to delete it, subject to legal record-keeping requirements. Write to <a href={`mailto:${site.email}`}>{site.email}</a> and we will respond within 30 days.</p>
+
+      <h2>The brokerage’s privacy notice</h2>
+      <p>{brokerage.name} operates within the M3 Group of companies. Their full privacy notice, including the Privacy Officer’s contact details, is at <a href={brokerage.privacyNoticeUrl} target="_blank" rel="noopener">mortgagealliance.com</a>.</p>
+
+      <p class="small">Last updated 16 September 2026.</p>
+    </div>
+  </section>
+</Base>
+<style>
+  .narrow { max-width: 760px; display: grid; gap: var(--s-4); }
+  h2 { font-size: 1.3rem; margin-top: var(--s-5); }
+  ul { display: grid; gap: var(--s-2); }
+</style>

@@ -1,0 +1,19 @@
+---
+import Base from '../../layouts/Base.astro';
+import RenewalCapture from '../../components/home/RenewalCapture.astro';
+---
+<Base title="Mortgage Renewal Reminder" description="Tell us when your mortgage renews and we check your lender's offer against the market 90 days before the date. No obligation.">
+  <header class="head"><div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/calculators">Calculators</a><span aria-hidden="true">/</span><span aria-current="page">Renewal reminder</span></nav>
+    <span class="eyebrow">Renewal reminder</span>
+    <h1>The one form that needs no maths.</h1>
+    <p class="lead">Your lender sends the renewal letter late and hopes you sign it. We contact you 90 days before the date with the letter’s offer compared against the market, and the honest case for staying or switching.</p>
+  </div></header>
+  <RenewalCapture />
+</Base>
+<style>
+  .head { padding-block: clamp(var(--s-6), 5vw, var(--s-8)); }
+  .head .container { display: grid; gap: var(--s-4); max-width: 860px; margin-inline: auto; }
+  .crumbs { font-size: var(--fs-small); color: var(--text-muted); display: flex; gap: var(--s-2); }
+  .crumbs a { color: var(--text-muted); text-decoration: none; }
+</style>

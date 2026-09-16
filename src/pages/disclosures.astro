@@ -1,0 +1,44 @@
+---
+import Base from '../layouts/Base.astro';
+import { team, brokerage, site, constants } from '../data/site';
+---
+<Base title="Disclosures" description="Licensing, brokerage affiliation, compensation and the limits of the information on cristinaacosta.ca.">
+  <section class="section legal">
+    <div class="container narrow">
+      <span class="eyebrow">Disclosures</span>
+      <h1>Who we are, how we are paid, and what this site is not.</h1>
+
+      <h2>Licensing and brokerage</h2>
+      <p>{team.map((p) => `${p.name} (licence ${p.licence})`).join(', ')} are Mortgage Associates licensed by the {brokerage.regulator} ({brokerage.regulatorShort}). We deal in mortgages in the name of <strong>{brokerage.name}</strong>, an independently owned and operated network member of Mortgage Alliance. Cristina Acosta Mortgage Team is a team name within the brokerage, not a brokerage itself.</p>
+      <p>Licences can be verified on the <a href={brokerage.regulatorUrl} target="_blank" rel="noopener">RECA website</a>. Office: {brokerage.address.line1}, {brokerage.address.city}, {brokerage.address.province} {brokerage.address.postal}.</p>
+
+      <h2>Not an offer of credit</h2>
+      <p>Information on this site, including calculator results, is general in nature and does not constitute an offer, commitment or approval of credit. All applications are subject to lender approval, credit review, income and property verification, and applicable lending guidelines.</p>
+
+      <h2>Rates, terms and calculators</h2>
+      <p>Rates, terms and product availability are set by third-party lenders, change without notice, and vary with credit profile, property type, loan-to-value and other factors. Calculators use published rules and typical assumptions, last verified {constants.verified}, and produce estimates only. They exclude property tax, insurance, condo fees and closing costs unless stated.</p>
+
+      <h2>No guarantee of outcome</h2>
+      <p>Examples on this site are illustrative and do not describe any specific client. Past results do not guarantee future outcomes; individual results depend on individual circumstances.</p>
+
+      <h2>Not professional advice</h2>
+      <p>Nothing on this site is legal, tax, accounting or investment advice. Consult a qualified professional for advice specific to your situation.</p>
+
+      <h2>Compensation</h2>
+      <p>For most residential mortgages we are compensated by the lender and there is no fee to you. Where a file requires an alternative or private lender and a broker fee applies, the amount is disclosed to you in writing before any application is submitted, and again in the mortgage documents.</p>
+
+      <h2>Third-party links</h2>
+      <p>Links to lenders, the mortgage application platform, booking calendars and other third-party sites are provided for convenience. We are not responsible for their content or their privacy practices.</p>
+
+      <h2>Privacy</h2>
+      <p>How we collect, use and protect your personal information is described in our <a href="/privacy">privacy notice</a>.</p>
+
+      <p class="small">Questions about these disclosures: <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+    </div>
+  </section>
+</Base>
+<style>
+  .narrow { max-width: 760px; display: grid; gap: var(--s-4); }
+  h1 { margin-bottom: var(--s-4); }
+  h2 { font-size: 1.3rem; margin-top: var(--s-5); }
+</style>

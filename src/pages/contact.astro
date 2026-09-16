@@ -1,0 +1,72 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { team, whatsapp, brokerage, site, situations } from '../data/site';
+---
+<Base title="Contact" description="Call, WhatsApp, email or book a conversation with Cristina Acosta, Juan Acosta or Sheryl Beaver, Mortgage Associates in Calgary. Evenings and weekends.">
+  <header class="head">
+    <div class="container">
+      <span class="eyebrow">Contact</span>
+      <h1>Pick a person and a channel. We answer evenings and weekends.</h1>
+      <p class="lead">{site.responseTime}. {site.hours[0].days} {site.hours[0].hours}, {site.hours[1].days.toLowerCase()} {site.hours[1].hours}.</p>
+    </div>
+  </header>
+
+  <section class="section-tight" id="call">
+    <div class="container cards">
+      {team.map((p) => (
+        <div class="card-c">
+          <h2>{p.name}</h2>
+          <p class="small">{p.title} · Licence {p.licence} · {p.languages.join(', ')}</p>
+          <ul>
+            <li><Icon name="phone" size={20} /><a href={`tel:${p.phoneE164}`}>{p.phone}</a></li>
+            <li id={p.slug === 'juan-acosta' ? 'whatsapp' : undefined}><Icon name="whatsapp" size={20} /><a href={whatsapp(p)} target="_blank" rel="noopener">WhatsApp {p.first}</a></li>
+            <li><Icon name="mail" size={20} /><a href={`mailto:${p.email}`}>{p.email}</a></li>
+            <li><Icon name="calendar" size={20} />{p.booking ? <a href={p.booking} target="_blank" rel="noopener">Book a conversation</a> : <span>Booking by phone or email</span>}</li>
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="section form-sec">
+    <div class="container grid">
+      <div>
+        <span class="eyebrow">Send a message</span>
+        <h2>Three fields and a question.</h2>
+        <p class="lead">Tell us who should reply and what it is about. We reply by email or text, whichever you give us.</p>
+        <div class="office">
+          <span class="eyebrow">Office</span>
+          <p>{brokerage.name}<br />{brokerage.address.line1}<br />{brokerage.address.city}, {brokerage.address.province} {brokerage.address.postal}</p>
+          <p><a href={brokerage.address.mapsUrl} target="_blank" rel="noopener">Open in maps</a> · In person by appointment</p>
+        </div>
+      </div>
+      <form class="form" name="contact" method="POST" action="/thanks?for=message" data-netlify="true" netlify-honeypot="company">
+        <input type="hidden" name="form-name" value="contact" />
+        <p class="hp"><label>Leave this empty <input name="company" tabindex="-1" autocomplete="off" /></label></p>
+        <div class="field"><label for="ct-name">Your name</label><input class="input" id="ct-name" name="name" required autocomplete="name" /></div>
+        <div class="field"><label for="ct-contact">Email or mobile</label><input class="input" id="ct-contact" name="contact" required autocomplete="email" /></div>
+        <div class="field"><span class="label">What is this about?</span><div class="choice">{situations.map((s) => <label><input type="radio" name="topic" value={s.short} /> {s.short}</label>)}<label><input type="radio" name="topic" value="Something else" checked /> Something else</label></div></div>
+        <div class="field"><span class="label">Who should reply?</span><div class="choice">{team.map((p) => <label><input type="radio" name="associate" value={p.first} /> {p.first}</label>)}<label><input type="radio" name="associate" value="Anyone" checked /> Anyone</label></div></div>
+        <div class="field"><label for="ct-msg">Your question</label><textarea class="input" id="ct-msg" name="message" rows="4" required></textarea></div>
+        <label class="consent"><input type="checkbox" name="consent" value="yes" required /><span>I consent to receiving communications from Enrich Mortgage Group, affiliated companies and authorized agents. You can withdraw your consent at any time by unsubscribing. <a href="/privacy">Privacy</a></span></label>
+        <button class="btn btn-primary btn-lg" type="submit">Send message</button>
+      </form>
+    </div>
+  </section>
+</Base>
+<style>
+  .head { padding-block: clamp(var(--s-6), 5vw, var(--s-8)); border-bottom: var(--hairline); }
+  .head .container { display: grid; gap: var(--s-4); max-width: 860px; margin-inline: auto; }
+  .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
+  .card-c { background: var(--surface); border: var(--hairline); padding: var(--s-5); border-radius: var(--radius); display: grid; gap: var(--s-2); align-content: start; }
+  .card-c h2 { font-size: 1.3rem; }
+  .card-c ul { list-style: none; padding: 0; margin: var(--s-2) 0 0; display: grid; gap: var(--s-3); }
+  .card-c li { display: grid; grid-template-columns: 20px 1fr; gap: var(--s-3); align-items: center; }
+  .card-c li :global(svg) { color: var(--accent); }
+  .form-sec { background: var(--surface); border-top: var(--hairline); }
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: var(--s-8); align-items: start; }
+  .form { display: grid; gap: var(--s-4); }
+  .office { margin-top: var(--s-6); }
+  @media (max-width: 900px) { .cards, .grid { grid-template-columns: 1fr; } }
+</style>

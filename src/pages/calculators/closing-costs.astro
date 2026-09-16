@@ -1,0 +1,66 @@
+---
+import Base from '../../layouts/Base.astro';
+import CalcShell from '../../components/calc/CalcShell.astro';
+---
+<Base title="Closing Costs Calculator for Alberta" description="Estimate closing costs in Alberta: land title registration fees instead of a land transfer tax, legal fees, title insurance, appraisal, inspection, adjustments and GST on new homes.">
+  <CalcShell tool="closing-costs" eyebrow="Closing costs in Alberta" title="No land transfer tax. Not zero either." lead="Alberta charges land title registration fees instead of a transfer tax, which is why closing here costs thousands less than in Ontario or BC. The rest is legal work, reports and adjustments. Have this cash ready on top of your down payment." resultLabel="Cash to have at closing" disclaimer="Estimate only. Legal fees and reports vary by firm and property; Alberta fee schedules are verified on the date shown and can change.">
+    <Fragment slot="inputs">
+      <div class="field"><label for="c-price">Purchase price</label><div class="range"><input type="range" id="c-price" min="150000" max="2000000" step="5000" value="550000" /><input class="input num" id="c-price-n" inputmode="numeric" aria-label="Purchase price, typed" /></div></div>
+      <div class="field"><label for="c-mort">Mortgage amount</label><div class="range"><input type="range" id="c-mort" min="0" max="2000000" step="5000" value="495000" /><input class="input num" id="c-mort-n" inputmode="numeric" aria-label="Mortgage amount, typed" /></div></div>
+      <div class="field"><span class="label">Type of purchase</span><div class="choice"><label><input type="radio" name="ptype" value="resale" checked /> Resale home</label><label><input type="radio" name="ptype" value="new" /> New build (GST applies)</label></div></div>
+      <div class="group"><span class="eyebrow">Typical costs, adjust if you have quotes</span>
+        <div class="two">
+          <div class="field"><label for="c-legal">Legal fees and disbursements</label><input class="input num" id="c-legal" inputmode="numeric" value="1600" /></div>
+          <div class="field"><label for="c-title">Title insurance</label><input class="input num" id="c-title" inputmode="numeric" value="300" /></div>
+          <div class="field"><label for="c-appr">Appraisal</label><input class="input num" id="c-appr" inputmode="numeric" value="400" /></div>
+          <div class="field"><label for="c-insp">Home inspection</label><input class="input num" id="c-insp" inputmode="numeric" value="500" /></div>
+          <div class="field"><label for="c-adj">Property tax adjustment</label><input class="input num" id="c-adj" inputmode="numeric" value="1200" /></div>
+          <div class="field"><label for="c-ins">First year home insurance</label><input class="input num" id="c-ins" inputmode="numeric" value="1500" /></div>
+        </div>
+      </div>
+    </Fragment>
+    <Fragment slot="result">
+      <div class="big"><span class="num" data-out="total">$0</span></div>
+      <p class="explain" data-out="explain"></p>
+      <dl>
+        <div><dt>Land title: transfer registration</dt><dd class="num" data-out="lt"></dd></div>
+        <div><dt>Land title: mortgage registration</dt><dd class="num" data-out="lm"></dd></div>
+        <div><dt>Legal, title insurance, reports</dt><dd class="num" data-out="prof"></dd></div>
+        <div><dt>Adjustments and insurance</dt><dd class="num" data-out="adj"></dd></div>
+        <div><dt>GST on a new build</dt><dd class="num" data-out="gst"></dd></div>
+        <div><dt>For comparison: Ontario land transfer tax</dt><dd class="num" data-out="ont"></dd></div>
+      </dl>
+      <div class="btn-row"><a class="btn btn-inverse" href="#email">Email me these numbers</a><a class="btn btn-outline-inverse" href="/mortgages/first-time-buyers">First-time buyer steps</a></div>
+    </Fragment>
+  </CalcShell>
+</Base>
+<script>
+  import { fmtMoney } from '../../lib/mortgage';
+  import { pair, animateMoney, num, parseNum, radio, setSummary } from '../../lib/calc-ui';
+  const root = document.querySelector<HTMLElement>('[data-calc="closing-costs"]')!;
+  const q = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const out = (k: string) => q<HTMLElement>(`[data-out="${k}"]`);
+  const val = (id: string) => parseNum(q<HTMLInputElement>(`#${id}`).value);
+  // Alberta Land Titles fees. VERIFY before launch: base fee and per-$5,000 rate for transfers and mortgages (schedule changed in 2024).
+  const albertaTransfer = (v: number) => 50 + Math.ceil(v / 5000) * 5;
+  const albertaMortgage = (v: number) => 50 + Math.ceil(v / 5000) * 5;
+  // Ontario provincial LTT for comparison (excluding Toronto and rebates).
+  const ontarioLTT = (v: number) => { let t = 0; const bands = [[55000, .005], [250000, .01], [400000, .015], [2000000, .02], [Infinity, .025]]; let prev = 0; for (const [cap, rate] of bands) { const slice = Math.max(0, Math.min(v, cap) - prev); t += slice * rate; prev = cap; if (v <= cap) break; } return t; };
+  function render() {
+    const price = num(root, 'c-price'), mort = num(root, 'c-mort');
+    const newBuild = radio(root, 'ptype', 'resale') === 'new';
+    const lt = albertaTransfer(price), lm = mort > 0 ? albertaMortgage(mort) : 0;
+    const prof = val('c-legal') + val('c-title') + val('c-appr') + val('c-insp');
+    const adj = val('c-adj') + val('c-ins');
+    // GST 5% on new builds; rebates for eligible buyers are not applied here. VERIFY first-time buyer GST rebate rules 2026.
+    const gst = newBuild ? price * 0.05 : 0;
+    const total = lt + lm + prof + adj + gst;
+    animateMoney(out('total'), total);
+    out('explain').textContent = `On a ${fmtMoney(price)} ${newBuild ? 'new build' : 'resale home'} in Alberta, budget about ${fmtMoney(total)} beyond the down payment${newBuild ? ', most of it GST, which some buyers can partly recover through rebates' : ''}.`;
+    animateMoney(out('lt'), lt); animateMoney(out('lm'), lm); animateMoney(out('prof'), prof); animateMoney(out('adj'), adj); animateMoney(out('gst'), gst); animateMoney(out('ont'), ontarioLTT(price));
+    setSummary(document, 'closing costs', { 'Purchase price': fmtMoney(price), 'Mortgage': fmtMoney(mort), 'Type': newBuild ? 'New build' : 'Resale', 'Land title fees': fmtMoney(lt + lm), 'Legal and reports': fmtMoney(prof), 'Adjustments and insurance': fmtMoney(adj), 'GST': fmtMoney(gst), 'Total cash at closing': fmtMoney(total) });
+  }
+  pair(q('#c-price'), q('#c-price-n'), render); pair(q('#c-mort'), q('#c-mort-n'), render);
+  root.querySelectorAll('input[name="ptype"], #c-legal, #c-title, #c-appr, #c-insp, #c-adj, #c-ins').forEach((el) => el.addEventListener('change', render));
+  render();
+</script>

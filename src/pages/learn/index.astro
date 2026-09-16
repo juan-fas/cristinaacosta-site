@@ -1,0 +1,44 @@
+---
+import Base from '../../layouts/Base.astro';
+import StartBlock from '../../components/StartBlock.astro';
+import { getCollection } from 'astro:content';
+import { team } from '../../data/site';
+const all = (await getCollection('learn')).sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+const stages = ['Before you buy', 'During your purchase', 'Owning and renewing', 'Special situations'] as const;
+const byStage = stages.map((s) => ({ s, items: all.filter((g) => g.data.stage === s) })).filter((g) => g.items.length);
+const name = (slug: string) => team.find((p) => p.slug === slug)?.name ?? '';
+---
+<Base title="Learn: Mortgage Guides for Alberta" description="Plain-language mortgage guides for Alberta, written and signed by licensed Mortgage Associates. Organized by where you are: before you buy, during your purchase, owning and renewing, special situations.">
+  <header class="head"><div class="container">
+    <span class="eyebrow">Learn</span>
+    <h1>The questions from the first meeting, answered in writing.</h1>
+    <p class="lead">Every guide is written by one of us, dated, and checked against the official sources on the date shown. No rate predictions, no filler.</p>
+  </div></header>
+  {byStage.map((g) => (
+    <section class="section-tight stage">
+      <div class="container">
+        <span class="eyebrow">{g.s}</span>
+        <div class="grid">
+          {g.items.map((it) => (
+            <a class="card" href={`/learn/${it.id}`}>
+              <h2>{it.data.title}</h2>
+              <p>{it.data.description}</p>
+              <span class="meta">{name(it.data.author)} · verified {it.data.verified.toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+              <span class="go">Read the guide</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  ))}
+  <StartBlock title="Reading is a good start. A conversation is faster." />
+</Base>
+<style>
+  .head { padding-block: clamp(var(--s-6), 5vw, var(--s-8)); border-bottom: var(--hairline); }
+  .head .container { display: grid; gap: var(--s-4); max-width: 860px; margin-inline: auto; }
+  .stage + .stage { border-top: var(--hairline); }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
+  .card h2 { font-size: 1.15rem; font-weight: 600; }
+  .meta { font-size: .78rem; color: var(--beige-700); font-family: var(--display); font-weight: 500; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+</style>

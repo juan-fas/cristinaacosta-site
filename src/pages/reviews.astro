@@ -1,0 +1,32 @@
+---
+/* Built and switched off. Set `live` to true only when consented, verifiable reviews exist,
+   then remove it from the sitemap filter in astro.config.mjs. */
+import Base from '../layouts/Base.astro';
+const live = false;
+const reviews: { text: string; who: string; city: string; year: number; associate: string }[] = [];
+---
+<Base title="Client reviews" description="What clients say about working with the Cristina Acosta Mortgage Team." noindex={!live}>
+  <section class="section">
+    <div class="container narrow">
+      <span class="eyebrow">Reviews</span>
+      {live && reviews.length ? (
+        <>
+          <h1>In their words.</h1>
+          <ul class="list">{reviews.map((r) => <li><blockquote><p>{r.text}</p><footer>{r.who}, {r.city}, {r.year} · worked with {r.associate}</footer></blockquote></li>)}</ul>
+        </>
+      ) : (
+        <>
+          <h1>Reviews are coming.</h1>
+          <p class="lead">We publish only real, consented reviews with a name or initials, a city and a year. The first ones will appear here as soon as clients have given permission. Until then, the best reference is a conversation.</p>
+          <a class="btn btn-primary" href="/start">Start a conversation</a>
+        </>
+      )}
+    </div>
+  </section>
+</Base>
+<style>
+  .narrow { max-width: 760px; display: grid; gap: var(--s-4); justify-items: start; }
+  .list { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s-5); }
+  blockquote { margin: 0; padding: var(--s-5); background: var(--surface); border-left: 3px solid var(--beige-500); }
+  blockquote footer { font-size: var(--fs-small); color: var(--text-muted); margin-top: var(--s-3); }
+</style>

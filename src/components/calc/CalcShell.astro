@@ -1,0 +1,56 @@
+---
+/* Layout shared by every calculator page: inputs left, sticky result right, email-my-numbers below. */
+import EmailResult from './EmailResult.astro';
+import { constants } from '../../data/site';
+interface Props { tool: string; title: string; eyebrow: string; lead: string; resultLabel: string; disclaimer?: string; noEmail?: boolean }
+const { tool, title, eyebrow, lead, resultLabel, disclaimer = 'Estimate only, not an offer of credit.', noEmail = false } = Astro.props;
+---
+<article class="calc-page" data-calc={tool}>
+  <header class="head">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/calculators">Calculators</a><span aria-hidden="true">/</span><span aria-current="page">{eyebrow}</span></nav>
+      <span class="eyebrow">{eyebrow}</span>
+      <h1>{title}</h1>
+      <p class="lead">{lead}</p>
+    </div>
+  </header>
+  <section class="section-tight">
+    <div class="container layout">
+      <form class="inputs" onsubmit="return false" data-inputs>
+        <slot name="inputs" />
+      </form>
+      <div class="result" aria-live="polite">
+        <span class="eyebrow">{resultLabel}</span>
+        <slot name="result" />
+        <p class="verified">{disclaimer} Constants verified {constants.verified}.</p>
+      </div>
+    </div>
+  </section>
+  <slot name="after" />
+  {!noEmail && <EmailResult tool={tool} />}
+</article>
+<style is:global>
+  .calc-page .head { padding-block: clamp(var(--s-6), 5vw, var(--s-8)); border-bottom: var(--hairline); }
+  .calc-page .head .container { display: grid; gap: var(--s-4); max-width: 860px; margin-inline: auto; }
+  .calc-page .crumbs { font-size: var(--fs-small); color: var(--text-muted); display: flex; gap: var(--s-2); flex-wrap: wrap; }
+  .calc-page .crumbs a { color: var(--text-muted); text-decoration: none; }
+  .calc-page .layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: var(--s-6); align-items: start; }
+  .calc-page .inputs { display: grid; gap: var(--s-5); }
+  .calc-page .two { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+  .calc-page .result { background: var(--inverse-bg); color: var(--inverse-text); padding: var(--s-6); border-radius: var(--radius); position: sticky; top: calc(var(--header-h) + var(--s-4)); }
+  .calc-page .result .eyebrow { color: var(--inverse-muted); }
+  .calc-page .result .big { display: flex; align-items: baseline; gap: var(--s-2); flex-wrap: wrap; margin-bottom: var(--s-4); }
+  .calc-page .result .big .num { font-family: var(--display); font-weight: 600; font-size: clamp(2.2rem, 4vw, 3rem); line-height: 1; }
+  .calc-page .result .per { color: var(--inverse-muted); font-size: 1rem; }
+  .calc-page .result dl { margin: 0 0 var(--s-4); display: grid; }
+  .calc-page .result dl div { display: flex; justify-content: space-between; gap: var(--s-4); padding: 8px 0; border-top: 1px solid var(--inverse-line); font-size: var(--fs-small); }
+  .calc-page .result dt { color: var(--inverse-muted); } .calc-page .result dd { margin: 0; text-align: right; }
+  .calc-page .result .explain { font-size: var(--fs-small); color: var(--inverse-muted); margin-bottom: var(--s-4); }
+  .calc-page .result .warn { font-size: var(--fs-small); background: rgba(244,239,233,.12); padding: var(--s-3); border-radius: var(--radius); margin-bottom: var(--s-4); }
+  .calc-page .result .verified { font-size: .72rem; color: var(--inverse-muted); margin-top: var(--s-4); max-width: none; }
+  .calc-page .result .btn-row { margin-top: var(--s-2); }
+  .calc-page .group { display: grid; gap: var(--s-4); padding: var(--s-4) 0; border-top: var(--hairline); }
+  .calc-page .group > .eyebrow { margin-bottom: 0; }
+  @media (max-width: 900px) { .calc-page .layout { grid-template-columns: 1fr; } .calc-page .result { position: static; } }
+  @media (max-width: 520px) { .calc-page .two { grid-template-columns: 1fr; } }
+</style>

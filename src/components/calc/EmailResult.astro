@@ -1,0 +1,58 @@
+---
+import { team } from '../../data/site';
+interface Props { tool: string }
+const { tool } = Astro.props;
+---
+<section class="section-tight email-sec" id="email">
+  <div class="container grid">
+    <div>
+      <span class="eyebrow">Keep these numbers</span>
+      <h2>Email me this simulation.</h2>
+      <p class="lead">You get a copy of your inputs and results, with the name of the associate who can check them with you. One email, no list.</p>
+    </div>
+    <form class="form" name="simulation" method="POST" action="/thanks?for=simulation" data-netlify="true" netlify-honeypot="company" data-email-form>
+      <input type="hidden" name="form-name" value="simulation" />
+      <input type="hidden" name="tool" value={tool} />
+      <input type="hidden" name="summary" value="" data-summary />
+      <p class="hp"><label>Leave this empty <input name="company" tabindex="-1" autocomplete="off" /></label></p>
+      <div class="two">
+        <div class="field"><label for={`em-name-${tool}`}>Your name</label><input class="input" id={`em-name-${tool}`} name="name" required autocomplete="name" /></div>
+        <div class="field"><label for={`em-email-${tool}`}>Email</label><input class="input" id={`em-email-${tool}`} name="email" type="email" required autocomplete="email" /></div>
+      </div>
+      <div class="field"><label for={`em-phone-${tool}`}>Mobile <span class="help">(optional, if you would like a call)</span></label><input class="input" id={`em-phone-${tool}`} name="phone" inputmode="tel" autocomplete="tel" /></div>
+      <div class="field"><span class="label">Who should the numbers go to, besides you?</span>
+        <div class="choice">{team.map((p, i) => <label><input type="radio" name="associate" value={p.first} checked={i === 1} /> {p.first}</label>)}<label><input type="radio" name="associate" value="Anyone" /> Anyone</label></div>
+      </div>
+      <label class="consent"><input type="checkbox" name="consent" value="yes" required /><span>I consent to receiving communications from Enrich Mortgage Group, affiliated companies and authorized agents. You can withdraw your consent at any time by unsubscribing. <a href="/privacy">Privacy</a></span></label>
+      <div class="btn-row"><button class="btn btn-primary btn-lg" type="submit">Email my simulation</button><span class="small" data-email-status></span></div>
+    </form>
+  </div>
+</section>
+<style>
+  .email-sec { background: var(--surface); border-top: var(--hairline); }
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: var(--s-8); align-items: start; }
+  .form { display: grid; gap: var(--s-4); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; gap: var(--s-6); } }
+  @media (max-width: 520px) { .two { grid-template-columns: 1fr; } }
+</style>
+<script>
+  // Progressive enhancement: post to the function that emails the visitor; if it fails, the plain form submit still stores the lead.
+  const form = document.querySelector<HTMLFormElement>('[data-email-form]');
+  const status = document.querySelector<HTMLElement>('[data-email-status]');
+  form?.addEventListener('submit', async (e) => {
+    if (!form.checkValidity()) return;
+    e.preventDefault();
+    const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    btn.disabled = true; if (status) status.textContent = 'Sending…';
+    try {
+      const data = Object.fromEntries(new FormData(form).entries());
+      const r = await fetch('/.netlify/functions/simulation', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      if (!r.ok) throw new Error(String(r.status));
+      location.href = '/thanks?for=simulation';
+    } catch {
+      // Function unavailable: fall back to the standard Netlify Forms submission.
+      form.submit();
+    }
+  });
+</script>

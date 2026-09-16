@@ -1,0 +1,101 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import { team, whatsapp, brokerage, site } from '../../data/site';
+import { bios } from '../../data/people';
+import cristina from '../../assets/photos/cristina-2.jpg';
+import juan from '../../assets/photos/juan-2.jpg';
+import sheryl from '../../assets/photos/sheryl-2.jpg';
+const photos = { cristina, juan, sheryl } as const;
+
+export function getStaticPaths() {
+  return team.map((p) => ({ params: { slug: p.slug }, props: { p } }));
+}
+const { p } = Astro.props;
+const bio = bios[p.slug];
+const photo = photos[p.photo];
+const schema = {
+  '@context': 'https://schema.org', '@type': 'Person', '@id': `${site.url}/about/${p.slug}#person`,
+  name: p.name, jobTitle: p.title, telephone: p.phoneE164, email: p.email, url: `${site.url}/about/${p.slug}`,
+  worksFor: { '@type': 'Organization', name: brokerage.name }, knowsLanguage: p.languages,
+  hasCredential: { '@type': 'EducationalOccupationalCredential', name: `Mortgage Associate licence ${p.licence}`, recognizedBy: { '@type': 'Organization', name: brokerage.regulator } },
+};
+---
+<Base title={`${p.name}, Mortgage Associate in Calgary`} description={`${p.name} is a licensed Mortgage Associate with ${brokerage.name} in Calgary. ${p.focus} ${p.languages.join(' and ')}.`} schema={schema}>
+  <!-- NEEDS CLIENT APPROVAL: bio text for {p.name} -->
+  <article class="person-page">
+    <header class="head">
+      <div class="container grid">
+        <div class="photo"><Picture src={photo} formats={['avif', 'webp']} widths={[480, 720, 960]} sizes="(max-width: 800px) 92vw, 40vw" alt={`${p.name}, Mortgage Associate`} loading="eager" /></div>
+        <div class="intro">
+          <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/about">Team</a><span aria-hidden="true">/</span><span aria-current="page">{p.first}</span></nav>
+          <span class="eyebrow">{p.title} · Licence {p.licence}</span>
+          <h1>{p.name}</h1>
+          <p class="lead">{bio.headline}</p>
+          <dl class="facts">
+            <div><dt>Licensed</dt><dd>Alberta, since {p.licensedSince}</dd></div>
+            <div><dt>Languages</dt><dd>{p.languages.join(' and ')}</dd></div>
+            <div><dt>Brokerage</dt><dd>{brokerage.name}</dd></div>
+          </dl>
+          <div class="ch">
+            {p.booking ? <a class="btn btn-primary" href={p.booking} target="_blank" rel="noopener"><Icon name="calendar" />Book a conversation</a> : <a class="btn btn-primary" href={`tel:${p.phoneE164}`}><Icon name="phone" />Call {p.phone}</a>}
+            <a class="btn btn-wa" href={whatsapp(p, `Hi ${p.first}, I found you on cristinaacosta.ca and have a mortgage question.`)} target="_blank" rel="noopener"><Icon name="whatsapp" />WhatsApp</a>
+            <a class="btn btn-secondary" href={p.apply} target="_blank" rel="noopener"><Icon name="docs" />Apply online</a>
+            <a class="btn btn-quiet" href={`mailto:${p.email}`}>{p.email}</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="section body">
+      <div class="container grid2">
+        <div class="text">
+          {bio.paragraphs.map((t) => <p>{t}</p>)}
+          {bio.refuses && <div class="refuse"><span class="eyebrow">What I refuse to do</span><p>{bio.refuses}</p></div>}
+          {bio.story && <div class="story"><span class="eyebrow">{bio.story.h}</span>{bio.story.body.map((t) => <p>{t}</p>)}</div>}
+        </div>
+        <aside class="side">
+          <span class="eyebrow">Who I help most</span>
+          <ul class="checks">{bio.helps.map((h) => <li><Icon name="check" size={20} /><span>{h}</span></li>)}</ul>
+          {bio.languagesNote && <p class="small" style="margin-top:var(--s-4)">{bio.languagesNote}</p>}
+          <p class="small" style="margin-top:var(--s-4)">Licence {p.licence}, verifiable on the <a href={brokerage.regulatorUrl} rel="noopener" target="_blank">RECA website</a>.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section-tight others">
+      <div class="container">
+        <span class="eyebrow">The rest of the team</span>
+        <div class="row">
+          {team.filter((t) => t.slug !== p.slug).map((t) => <a class="card" href={`/about/${t.slug}`}><h2>{t.name}</h2><p>{t.focus}</p><span class="go">Profile</span></a>)}
+          <a class="card" href="/about"><h2>How we work</h2><p>The seven steps, the reasons clients choose us, and the brokerage behind the team.</p><span class="go">About the team</span></a>
+        </div>
+      </div>
+    </section>
+  </article>
+</Base>
+<style>
+  .head { padding-block: clamp(var(--s-6), 5vw, var(--s-8)); border-bottom: var(--hairline); }
+  .grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(var(--s-6), 5vw, var(--s-9)); align-items: center; }
+  .photo :global(img) { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; object-position: center top; border-radius: var(--radius-lg); background: var(--surface-2); }
+  .intro { display: grid; gap: var(--s-4); }
+  .crumbs { font-size: var(--fs-small); color: var(--text-muted); display: flex; gap: var(--s-2); }
+  .crumbs a { color: var(--text-muted); text-decoration: none; }
+  .facts { margin: 0; display: grid; grid-template-columns: repeat(3, auto); gap: var(--s-5); justify-content: start; }
+  .facts dt { font-family: var(--display); font-weight: 500; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); }
+  .facts dd { margin: 2px 0 0; font-size: var(--fs-small); }
+  .ch { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .grid2 { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, .8fr); gap: var(--s-8); align-items: start; }
+  .text p { font-size: 1.05rem; }
+  .refuse, .story { margin-top: var(--s-6); padding: var(--s-5); background: var(--surface); border-left: 3px solid var(--accent); }
+  .story { border-left-color: var(--beige-500); }
+  .side { position: sticky; top: calc(var(--header-h) + var(--s-4)); }
+  .checks { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s-3); }
+  .checks li { display: grid; grid-template-columns: 20px 1fr; gap: var(--s-3); }
+  .checks :global(svg) { color: var(--ok); margin-top: 3px; }
+  .others { background: var(--surface); border-top: var(--hairline); }
+  .row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
+  .row h2 { font-size: 1.15rem; font-weight: 600; }
+  @media (max-width: 800px) { .grid, .grid2, .row { grid-template-columns: 1fr; } .photo { max-width: 420px; } .facts { grid-template-columns: 1fr 1fr; } .side { position: static; } }
+</style>

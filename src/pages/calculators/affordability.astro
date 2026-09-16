@@ -1,0 +1,68 @@
+---
+import Base from '../../layouts/Base.astro';
+import CalcShell from '../../components/calc/CalcShell.astro';
+import { constants } from '../../data/site';
+---
+<Base title="Mortgage Affordability and Stress Test Calculator (Alberta)" description="How much can you afford in Alberta? Maximum purchase price from income, debts and down payment, qualified at the stress-test rate, with the GDS and TDS limits explained.">
+  <CalcShell tool="affordability" eyebrow="Affordability and stress test" title="How much can I afford?" lead="Lenders test you at the higher of your rate plus 2% or 5.25%, and cap your housing costs at 39% of income and all debts at 44%. This tool applies both and tells you which one is holding the number." resultLabel="Estimated maximum purchase price" disclaimer="Estimate only, not an offer of credit. Lender policies and property type can change the result.">
+    <Fragment slot="inputs">
+      <div class="field"><label for="a-income">Household income before tax, per year</label><div class="range"><input type="range" id="a-income" min="30000" max="400000" step="1000" value="110000" /><input class="input num" id="a-income-n" inputmode="numeric" aria-label="Income, typed" /></div></div>
+      <div class="field"><label for="a-debts">Monthly debt payments</label><div class="range"><input type="range" id="a-debts" min="0" max="5000" step="50" value="400" /><input class="input num" id="a-debts-n" inputmode="numeric" aria-label="Monthly debts, typed" /></div><span class="help">Car loans, student loans, 3% of card and line-of-credit balances.</span></div>
+      <div class="field"><label for="a-down">Down payment available</label><div class="range"><input type="range" id="a-down" min="0" max="500000" step="1000" value="50000" /><input class="input num" id="a-down-n" inputmode="numeric" aria-label="Down payment, typed" /></div></div>
+      <div class="two">
+        <div class="field"><label for="a-rate">Contract rate</label><div class="range"><input type="range" id="a-rate" min="2" max="9" step="0.05" value="4.5" /><input class="input num" id="a-rate-n" inputmode="decimal" aria-label="Rate, typed" /></div></div>
+        <div class="field"><label for="a-amort">Amortization</label><select class="select" id="a-amort"><option value="25">25 years</option><option value="30">30 years</option><option value="20">20 years</option></select></div>
+      </div>
+      <div class="group"><span class="eyebrow">Housing costs the lender adds</span>
+        <div class="two">
+          <div class="field"><label for="a-tax">Property tax, monthly</label><input class="input num" id="a-tax" inputmode="numeric" value="300" /></div>
+          <div class="field"><label for="a-heat">Heating, monthly</label><input class="input num" id="a-heat" inputmode="numeric" value="120" /></div>
+        </div>
+        <div class="field"><label for="a-condo">Condo fees, monthly <span class="help">(half is counted)</span></label><input class="input num" id="a-condo" inputmode="numeric" value="0" /></div>
+      </div>
+    </Fragment>
+    <Fragment slot="result">
+      <div class="big"><span class="num" data-out="price">$0</span></div>
+      <p class="explain" data-out="explain"></p>
+      <dl>
+        <div><dt>Qualifying rate (stress test)</dt><dd data-out="qual"></dd></div>
+        <div><dt>Maximum mortgage</dt><dd class="num" data-out="mort"></dd></div>
+        <div><dt>Plus your down payment</dt><dd class="num" data-out="down"></dd></div>
+        <div><dt>Limited by</dt><dd data-out="limit"></dd></div>
+        <div><dt>Payment at your actual rate</dt><dd class="num" data-out="pay"></dd></div>
+        <div><dt>Without the stress test you could borrow</dt><dd class="num" data-out="nostress"></dd></div>
+      </dl>
+      <p class="warn" data-out="warn" hidden></p>
+      <div class="btn-row"><a class="btn btn-inverse" href="#email">Email me these numbers</a><a class="btn btn-outline-inverse" href="/start?for=first">Check my buying power with a person</a></div>
+    </Fragment>
+  </CalcShell>
+</Base>
+<script>
+  import { affordability, mortgageFactor, periodicRate, minDownPayment, fmtMoney } from '../../lib/mortgage';
+  import { pair, animateMoney, num, parseNum, setSummary } from '../../lib/calc-ui';
+  const root = document.querySelector<HTMLElement>('[data-calc="affordability"]')!;
+  const q = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const out = (k: string) => q<HTMLElement>(`[data-out="${k}"]`);
+  const val = (id: string) => parseNum(q<HTMLInputElement>(`#${id}`).value);
+  function render() {
+    const i = { income: num(root, 'a-income'), debtsMonthly: num(root, 'a-debts'), down: num(root, 'a-down'), ratePct: num(root, 'a-rate'), amortYears: num(root, 'a-amort'), taxMonthly: val('a-tax'), heatMonthly: val('a-heat'), condoMonthly: val('a-condo') };
+    const r = affordability(i);
+    animateMoney(out('price'), r.maxPrice);
+    out('qual').textContent = `${(r.qualRate * 100).toFixed(2)}%`;
+    animateMoney(out('mort'), r.maxMortgage);
+    animateMoney(out('down'), i.down);
+    out('limit').textContent = r.limitedBy === 'GDS' ? 'Housing costs (39% of income)' : 'All debts (44% of income)';
+    animateMoney(out('pay'), r.monthlyAtContract, 0);
+    const room = Math.max(0, Math.min(r.gdsPayment, r.tdsPayment));
+    const rc = periodicRate(i.ratePct, 12);
+    const noStress = room * mortgageFactor(rc, i.amortYears * 12);
+    animateMoney(out('nostress'), noStress);
+    out('explain').textContent = `Your income leaves about ${fmtMoney(room)} a month for a mortgage payment. Tested at ${(r.qualRate * 100).toFixed(2)}% instead of ${i.ratePct.toFixed(2)}%, that supports ${fmtMoney(r.maxMortgage)}.`;
+    const warn = out('warn'); const minDown = minDownPayment(r.maxPrice);
+    if (i.down < minDown) { warn.textContent = `At this price the minimum down payment is ${fmtMoney(minDown)}. With ${fmtMoney(i.down)} the realistic maximum is lower; the readiness check and a conversation will pin it down.`; warn.hidden = false; } else warn.hidden = true;
+    setSummary(document, 'affordability', { 'Income': fmtMoney(i.income), 'Monthly debts': fmtMoney(i.debtsMonthly), 'Down payment': fmtMoney(i.down), 'Contract rate': `${i.ratePct.toFixed(2)}%`, 'Qualifying rate': `${(r.qualRate * 100).toFixed(2)}%`, 'Maximum mortgage': fmtMoney(r.maxMortgage), 'Maximum price': fmtMoney(r.maxPrice), 'Limited by': r.limitedBy });
+  }
+  pair(q('#a-income'), q('#a-income-n'), render); pair(q('#a-debts'), q('#a-debts-n'), render); pair(q('#a-down'), q('#a-down-n'), render); pair(q('#a-rate'), q('#a-rate-n'), render, 2);
+  ['a-amort', 'a-tax', 'a-heat', 'a-condo'].forEach((id) => q(`#${id}`).addEventListener('change', render));
+  render();
+</script>

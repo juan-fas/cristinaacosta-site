@@ -1,0 +1,77 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import StartBlock from '../../components/StartBlock.astro';
+import { situations } from '../../data/site';
+
+const directory = [
+  { t: 'Bridge financing', to: 'refinance', d: 'Short-term financing that covers the gap when you buy before your current home closes. Needs a firm sale and usually lasts weeks, not months.' },
+  { t: 'Purchase plus improvements', to: 'first-time-buyers', d: 'Add renovation costs to the mortgage at purchase, with quotes up front and funds released as work completes.' },
+  { t: 'Spousal buyout and separation', to: 'refinance', d: 'One partner keeps the home and refinances to pay out the other. Some lenders allow up to 95% of the value under a separation agreement.' },
+  { t: 'Reverse mortgage', to: 'refinance', d: 'Homeowners 55 and over access equity with no monthly payments; interest accrues against the home. We explain the trade-offs plainly.' },
+  { t: 'Construction and new build', to: 'first-time-buyers', d: 'Draw mortgages that fund a build in stages, or builder mortgages on a completed new home. Timing of the rate hold matters.' },
+  { t: 'Rural and acreage', to: 'first-time-buyers', d: 'Lenders value the house and a limited amount of land. Wells, septic and outbuildings change what qualifies.' },
+  { t: 'Manufactured and modular homes', to: 'first-time-buyers', d: 'Financing depends on the foundation, the land, and the age of the home. Some lenders decline; some specialise.' },
+  { t: 'Second mortgage', to: 'refinance', d: 'A separate loan behind your existing mortgage, used when breaking the first would cost too much. Higher rate, shorter term.' },
+  { t: 'Private mortgage', to: 'self-employed', d: 'Short-term financing from a private lender when banks cannot fit the file. Fees and rates are higher, and an exit plan is part of the deal.' },
+  { t: 'Non-resident and foreign buyers', to: 'new-to-canada', d: 'Buying from abroad is possible with larger down payments and specific lenders. Federal restrictions on foreign purchases apply; we confirm the current rules.' },
+  { t: 'Mortgage switch and transfer', to: 'renewal', d: 'Moving the same mortgage to a new lender at renewal, usually at no cost to you.' },
+  { t: 'Portability', to: 'renewal', d: 'Taking your current mortgage to a new home to avoid the penalty. Works with some lenders and some terms; we check yours.' },
+  { t: 'Second opinion', to: 'first-time-buyers', d: 'You have an approval or an offer and want it checked. We review it for free and tell you honestly whether to sign.' },
+  { t: 'Credit and mortgage preparation', to: 'first-time-buyers', d: 'Not ready yet? A written plan for credit, savings and timing so the next application succeeds.' },
+];
+---
+<Base title="Mortgage Solutions in Calgary and Alberta" description="Every mortgage situation we handle, organized by yours: first-time buyers, newcomers, self-employed, renewals, refinancing, investment and commercial, plus the full list from bridge financing to spousal buyouts.">
+  <header class="head">
+    <div class="container">
+      <span class="eyebrow">Mortgages by situation</span>
+      <h1>Start from your situation, not from a product name.</h1>
+      <p class="lead">Nobody searches for "portability". People ask whether they can keep their mortgage when they move. Choose the situation that sounds like yours, and the product names take care of themselves.</p>
+    </div>
+  </header>
+  <section class="section-tight">
+    <div class="container grid">
+      {situations.map((s) => (
+        <a class="card" href={`/mortgages/${s.slug}`}><Icon name={s.icon} class="ico" size={28} /><h2>{s.short}</h2><p>{s.blurb}</p><span class="go">See the steps</span></a>
+      ))}
+    </div>
+  </section>
+  <section class="section every" id="every-situation">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Every other situation</span>
+        <h2>The full list, A to Z.</h2>
+        <p class="lead">Short answers here; the details in a conversation. Each one links to the situation page it belongs with.</p>
+      </div>
+      <div class="dir">
+        {directory.map((d) => (
+          <details name="dir">
+            <summary><h3>{d.t}</h3><Icon name="plus" size={20} /></summary>
+            <p>{d.d}</p>
+            <p class="links"><a href={`/mortgages/${d.to}`}>Related situation</a> · <a href="/start">Ask us about this</a></p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+  <StartBlock />
+</Base>
+<style>
+  .head { padding-block: clamp(var(--s-6), 6vw, var(--s-8)); border-bottom: var(--hairline); }
+  .head .container { display: grid; gap: var(--s-4); max-width: 860px; margin-inline: auto; }
+  .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-4); }
+  .grid h2 { font-size: 1.15rem; font-weight: 600; margin-top: var(--s-1); }
+  .every { background: var(--surface); border-top: var(--hairline); }
+  .dir { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--s-8); }
+  details { border-bottom: var(--hairline); }
+  summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: var(--s-4); padding: var(--s-4) 0; }
+  summary::-webkit-details-marker { display: none; }
+  summary h3 { font-size: 1.05rem; font-weight: 500; }
+  summary :global(svg) { color: var(--accent); flex: none; transition: transform var(--dur-fast) var(--ease); }
+  details[open] summary :global(svg) { transform: rotate(45deg); }
+  details p { color: var(--text-muted); font-size: var(--fs-small); padding-bottom: var(--s-3); }
+  .links { font-family: var(--display); font-weight: 500; }
+  @media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 760px) { .dir { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+</style>

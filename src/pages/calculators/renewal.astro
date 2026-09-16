@@ -1,0 +1,55 @@
+---
+import Base from '../../layouts/Base.astro';
+import CalcShell from '../../components/calc/CalcShell.astro';
+---
+<Base title="Mortgage Renewal Savings Calculator" description="Compare your lender's renewal offer against a market rate over the whole term. See the monthly difference and the total, then decide whether to switch or stay.">
+  <CalcShell tool="renewal" eyebrow="Renewal savings" title="Is the letter a good offer?" lead="Enter the rate in your renewal letter and a rate you have seen in the market. The difference over the term is what you are deciding about. Switching at renewal has no penalty, and the new lender usually covers the transfer costs." resultLabel="Difference over the term" disclaimer="Estimate only. Rates you enter are yours; nothing here is a rate offer.">
+    <Fragment slot="inputs">
+      <div class="field"><label for="r-bal">Balance at renewal</label><div class="range"><input type="range" id="r-bal" min="50000" max="1500000" step="5000" value="410000" /><input class="input num" id="r-bal-n" inputmode="numeric" aria-label="Balance, typed" /></div></div>
+      <div class="two">
+        <div class="field"><label for="r-offer">Rate in your letter</label><div class="range"><input type="range" id="r-offer" min="2" max="9" step="0.05" value="5.09" /><input class="input num" id="r-offer-n" inputmode="decimal" aria-label="Offered rate, typed" /></div></div>
+        <div class="field"><label for="r-market">Market rate you have seen</label><div class="range"><input type="range" id="r-market" min="2" max="9" step="0.05" value="4.49" /><input class="input num" id="r-market-n" inputmode="decimal" aria-label="Market rate, typed" /></div></div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="r-amort">Years remaining</label><select class="select" id="r-amort"><option value="20">20</option><option value="25">25</option><option value="15">15</option><option value="10">10</option></select></div>
+        <div class="field"><label for="r-term">New term</label><select class="select" id="r-term"><option value="5">5 years</option><option value="3">3 years</option><option value="2">2 years</option><option value="1">1 year</option></select></div>
+      </div>
+    </Fragment>
+    <Fragment slot="result">
+      <div class="big"><span class="num" data-out="diff">$0</span></div>
+      <p class="explain" data-out="explain"></p>
+      <dl>
+        <div><dt>Payment at the letter’s rate</dt><dd class="num" data-out="offerpay"></dd></div>
+        <div><dt>Payment at the market rate</dt><dd class="num" data-out="marketpay"></dd></div>
+        <div><dt>Monthly difference</dt><dd class="num" data-out="monthly"></dd></div>
+        <div><dt>Interest difference over the term</dt><dd class="num" data-out="interest"></dd></div>
+      </dl>
+      <div class="btn-row"><a class="btn btn-inverse" href="#email">Email me these numbers</a><a class="btn btn-outline-inverse" href="/calculators/renewal-reminder">Remind me before renewal</a></div>
+    </Fragment>
+  </CalcShell>
+</Base>
+<script>
+  import { pmt, periodicRate, fmtMoney } from '../../lib/mortgage';
+  import { pair, animateMoney, num, setSummary } from '../../lib/calc-ui';
+  const root = document.querySelector<HTMLElement>('[data-calc="renewal"]')!;
+  const q = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const out = (k: string) => q<HTMLElement>(`[data-out="${k}"]`);
+  function interestOverTerm(bal: number, ratePct: number, amortYears: number, termYears: number) {
+    const r = periodicRate(ratePct, 12), n = amortYears * 12, p = pmt(r, n, bal);
+    let b = bal, paid = 0;
+    for (let m = 0; m < termYears * 12; m++) { const i = b * r; paid += i; b -= p - i; }
+    return { p, interest: paid };
+  }
+  function render() {
+    const bal = num(root, 'r-bal'), offer = num(root, 'r-offer'), market = num(root, 'r-market'), amort = num(root, 'r-amort'), term = num(root, 'r-term');
+    const a = interestOverTerm(bal, offer, amort, term), b = interestOverTerm(bal, market, amort, term);
+    const diff = a.interest - b.interest;
+    animateMoney(out('diff'), Math.abs(diff));
+    out('explain').textContent = diff >= 0 ? `The market rate saves about ${fmtMoney(Math.abs(diff))} in interest over ${term} years compared with the letter.` : `The letter is better than the market rate you entered by about ${fmtMoney(Math.abs(diff))}. Take it, or ask us to check the whole market.`;
+    animateMoney(out('offerpay'), a.p); animateMoney(out('marketpay'), b.p); animateMoney(out('monthly'), Math.abs(a.p - b.p)); animateMoney(out('interest'), Math.abs(diff));
+    setSummary(document, 'renewal', { 'Balance': fmtMoney(bal), 'Letter rate': `${offer.toFixed(2)}%`, 'Market rate': `${market.toFixed(2)}%`, 'Term': `${term} years`, 'Payment, letter': fmtMoney(a.p), 'Payment, market': fmtMoney(b.p), 'Difference over term': fmtMoney(Math.abs(diff)) });
+  }
+  pair(q('#r-bal'), q('#r-bal-n'), render); pair(q('#r-offer'), q('#r-offer-n'), render, 2); pair(q('#r-market'), q('#r-market-n'), render, 2);
+  ['r-amort', 'r-term'].forEach((id) => q(`#${id}`).addEventListener('change', render));
+  render();
+</script>

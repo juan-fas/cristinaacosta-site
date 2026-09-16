@@ -1,0 +1,60 @@
+---
+import Base from '../../layouts/Base.astro';
+import CalcShell from '../../components/calc/CalcShell.astro';
+---
+<Base title="Self-Employed Mortgage Income Estimator" description="Estimate the income a lender is likely to use if you are self-employed in Alberta: two-year averaging, the lower-year rule when income falls, and eligible add-backs.">
+  <CalcShell tool="self-employed" eyebrow="Self-employed income" title="What income will a lender actually use?" lead="Prime lenders average your last two years of net income and may add back certain expenses. If the latest year fell sharply, they use the lower year. This estimate shows both, and what a stated-income program might accept instead." resultLabel="Income a prime lender is likely to use" disclaimer="Estimate only. Add-back rules and stated-income programs differ by lender and by insurer.">
+    <Fragment slot="inputs">
+      <div class="two">
+        <div class="field"><label for="se-y1">Net income, two years ago (line 15000)</label><input class="input num" id="se-y1" inputmode="numeric" value="58000" /></div>
+        <div class="field"><label for="se-y2">Net income, last year (line 15000)</label><input class="input num" id="se-y2" inputmode="numeric" value="71000" /></div>
+      </div>
+      <div class="group"><span class="eyebrow">Add-backs some lenders allow, per year</span>
+        <div class="two">
+          <div class="field"><label for="se-cca">Capital cost allowance</label><input class="input num" id="se-cca" inputmode="numeric" value="6000" /></div>
+          <div class="field"><label for="se-home">Business use of home</label><input class="input num" id="se-home" inputmode="numeric" value="3000" /></div>
+        </div>
+      </div>
+      <div class="field"><span class="label">Structure</span><div class="choice"><label><input type="radio" name="struct" value="sole" checked /> Sole proprietor</label><label><input type="radio" name="struct" value="corp" /> Incorporated</label></div><span class="help">If incorporated, some lenders also consider retained earnings or gross-up dividends. We look at that with your accountant.</span></div>
+      <div class="field"><label for="se-deposits">Twelve months of business deposits <span class="help">(for the stated-income comparison, optional)</span></label><input class="input num" id="se-deposits" inputmode="numeric" value="0" /></div>
+    </Fragment>
+    <Fragment slot="result">
+      <div class="big"><span class="num" data-out="income">$0</span><span class="per">/ year</span></div>
+      <p class="explain" data-out="explain"></p>
+      <dl>
+        <div><dt>Two-year average</dt><dd class="num" data-out="avg"></dd></div>
+        <div><dt>Add-backs included</dt><dd class="num" data-out="adds"></dd></div>
+        <div><dt>Rule applied</dt><dd data-out="rule"></dd></div>
+        <div><dt>Stated-income view (deposits-based)</dt><dd class="num" data-out="stated"></dd></div>
+      </dl>
+      <p class="warn" data-out="warn" hidden></p>
+      <div class="btn-row"><a class="btn btn-inverse" href="#email">Email me these numbers</a><a class="btn btn-outline-inverse" href="/start?for=self">Talk to Juan about my file</a></div>
+    </Fragment>
+  </CalcShell>
+</Base>
+<script>
+  import { fmtMoney } from '../../lib/mortgage';
+  import { animateMoney, parseNum, radio, setSummary } from '../../lib/calc-ui';
+  const root = document.querySelector<HTMLElement>('[data-calc="self-employed"]')!;
+  const q = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const out = (k: string) => q<HTMLElement>(`[data-out="${k}"]`);
+  const val = (id: string) => parseNum(q<HTMLInputElement>(`#${id}`).value);
+  function render() {
+    const y1 = val('se-y1'), y2 = val('se-y2'), adds = val('se-cca') + val('se-home'), dep = val('se-deposits');
+    const a1 = y1 + adds, a2 = y2 + adds;
+    const avg = (a1 + a2) / 2;
+    const declining = a2 < a1 * 0.8;   // typical: if latest year is down more than ~20%, use the lower year
+    const used = declining ? a2 : avg;
+    animateMoney(out('income'), used);
+    animateMoney(out('avg'), avg); animateMoney(out('adds'), adds);
+    out('rule').textContent = declining ? 'Lower year, because income fell' : 'Two-year average';
+    const stated = dep > 0 ? dep * 0.75 : 0; // illustrative: many programs consider a share of gross deposits as reasonable income
+    out('stated').textContent = dep > 0 ? `${fmtMoney(stated)} (illustrative)` : 'Add deposits to see';
+    out('explain').textContent = declining ? `Your latest year is more than 20% below the year before, so a prime lender will likely use ${fmtMoney(a2)} rather than the average.` : `A prime lender averages ${fmtMoney(a1)} and ${fmtMoney(a2)} after add-backs, giving ${fmtMoney(used)}.`;
+    const warn = out('warn');
+    if (radio(root, 'struct', 'sole') === 'corp') { warn.textContent = 'Incorporated: lenders may also look at corporate retained earnings or gross up dividends. That can raise the usable income; it depends on the lender and your accountant’s statements.'; warn.hidden = false; } else warn.hidden = true;
+    setSummary(document, 'self-employed income', { 'Year 1 net': fmtMoney(y1), 'Year 2 net': fmtMoney(y2), 'Add-backs': fmtMoney(adds), 'Rule': declining ? 'Lower year' : 'Average', 'Lender income estimate': fmtMoney(used), 'Stated-income view': dep > 0 ? fmtMoney(stated) : 'n/a' });
+  }
+  root.querySelectorAll('input').forEach((el) => el.addEventListener('change', render));
+  render();
+</script>

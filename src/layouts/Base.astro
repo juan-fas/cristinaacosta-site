@@ -76,7 +76,12 @@ const schemas = [orgSchema, ...(schema ? (Array.isArray(schema) ? schema : [sche
       const io = new IntersectionObserver((entries) => {
         for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
       }, { rootMargin: '0px 0px -8% 0px' });
-      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+      document.querySelectorAll('.reveal').forEach((el) => {
+        // Anything already on screen shows at once; the rest animates in on scroll.
+        if (el.getBoundingClientRect().top < innerHeight) el.classList.add('in'); else io.observe(el);
+      });
+      // Safety net: never leave content hidden if the observer does not fire.
+      setTimeout(() => document.querySelectorAll('.reveal:not(.in)').forEach((el) => el.classList.add('in')), 4000);
     </script>
   </body>
 </html>

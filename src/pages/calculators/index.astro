@@ -1,0 +1,53 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import StartBlock from '../../components/StartBlock.astro';
+import { constants } from '../../data/site';
+const groups = [
+  { h: 'Before you buy', tools: [
+    { href: '/calculators/readiness', t: 'Am I ready to buy?', d: 'Five questions about status, income, savings and timing. Ends in a next step, not a score.', icon: 'check' },
+    { href: '/calculators/affordability', t: 'How much can I afford?', d: 'Maximum price from your income and savings, and how the stress test changes it.', icon: 'home' },
+    { href: '/calculators/closing-costs', t: 'Closing costs in Alberta', d: 'Legal fees, title registration, appraisal, adjustments. No land transfer tax here, but not zero.', icon: 'docs' },
+  ] },
+  { h: 'Your payment', tools: [
+    { href: '/calculators/payment', t: 'Mortgage payment', d: 'Monthly, bi-weekly or weekly, with mortgage insurance when the down payment is under 20%.', icon: 'calc' },
+    { href: '/calculators/self-employed', t: 'Self-employed income', d: 'The income a lender is likely to use from two years of returns and add-backs.', icon: 'briefcase' },
+  ] },
+  { h: 'Renewing or changing', tools: [
+    { href: '/calculators/renewal', t: 'Renewal savings', d: 'Your lender’s letter against a market rate, over the whole term.', icon: 'renew' },
+    { href: '/calculators/penalty', t: 'Penalty to break my mortgage', d: 'Three months’ interest versus interest rate differential, and why lenders differ.', icon: 'equity' },
+    { href: '/calculators/renewal-reminder', t: 'Renewal reminder', d: 'No maths. Tell us the month and we check the market 90 days before it.', icon: 'calendar' },
+  ] },
+];
+---
+<Base title="Mortgage Calculators for Alberta" description="Free mortgage calculators built for Alberta: affordability with the stress test, payment with mortgage insurance, closing costs, renewal savings, penalty estimate, self-employed income and a first-time buyer readiness check.">
+  <header class="head">
+    <div class="container">
+      <span class="eyebrow">Calculators</span>
+      <h1>Run your own numbers first. Then we check them together.</h1>
+      <p class="lead">Every tool shows the one number that matters, explains what moved it, and offers to email you the result. Rules and constants were verified on {constants.verified} and are shown on every page.</p>
+    </div>
+  </header>
+  {groups.map((g) => (
+    <section class="section-tight grp">
+      <div class="container">
+        <span class="eyebrow">{g.h}</span>
+        <div class="grid">
+          {g.tools.map((t) => <a class="card" href={t.href}><Icon name={t.icon} class="ico" size={28} /><h2>{t.t}</h2><p>{t.d}</p><span class="go">Open</span></a>)}
+        </div>
+      </div>
+    </section>
+  ))}
+  <section class="section-tight">
+    <div class="container"><p class="small">Coming after launch: rental cash flow, rent versus own, and a debt consolidation comparison. Estimates only; not offers of credit.</p></div>
+  </section>
+  <StartBlock title="Numbers make more sense with someone across the table." />
+</Base>
+<style>
+  .head { padding-block: clamp(var(--s-6), 5vw, var(--s-8)); border-bottom: var(--hairline); }
+  .head .container { display: grid; gap: var(--s-4); max-width: 860px; margin-inline: auto; }
+  .grp + .grp { border-top: var(--hairline); }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
+  .grid h2 { font-size: 1.15rem; font-weight: 600; margin-top: var(--s-1); }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+</style>

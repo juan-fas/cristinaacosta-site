@@ -1,0 +1,68 @@
+---
+import Base from '../../layouts/Base.astro';
+import CalcShell from '../../components/calc/CalcShell.astro';
+---
+<Base title="Mortgage Payment Calculator (Alberta)" description="Calculate a Canadian mortgage payment with semi-annual compounding, mortgage insurance under 20% down, and optional property tax. Monthly, bi-weekly or weekly.">
+  <CalcShell tool="payment" eyebrow="Mortgage payment" title="What would the payment be?" lead="Canadian fixed rates compound semi-annually, and under 20% down the insurance premium is added to the loan. Both are built in. Property tax is optional because it depends on where you buy." resultLabel="Estimated payment" disclaimer="Estimate only, not an offer of credit. Excludes home insurance and condo fees.">
+    <Fragment slot="inputs">
+      <div class="field"><label for="p-price">Purchase price</label><div class="range"><input type="range" id="p-price" min="150000" max="2000000" step="5000" value="550000" /><input class="input num" id="p-price-n" inputmode="numeric" aria-label="Purchase price, typed" /></div></div>
+      <div class="field"><label for="p-down">Down payment</label><div class="range"><input type="range" id="p-down" min="0" max="550000" step="1000" value="55000" /><input class="input num" id="p-down-n" inputmode="numeric" aria-label="Down payment, typed" /></div><span class="help" data-down-help></span></div>
+      <div class="two">
+        <div class="field"><label for="p-rate">Interest rate</label><div class="range"><input type="range" id="p-rate" min="2" max="9" step="0.05" value="4.5" /><input class="input num" id="p-rate-n" inputmode="decimal" aria-label="Interest rate, typed" /></div></div>
+        <div class="field"><label for="p-amort">Amortization</label><select class="select" id="p-amort"><option value="25">25 years</option><option value="30">30 years</option><option value="20">20 years</option><option value="15">15 years</option><option value="10">10 years</option></select></div>
+      </div>
+      <div class="field"><span class="label">Payment frequency</span><div class="choice"><label><input type="radio" name="freq" value="12" checked /> Monthly</label><label><input type="radio" name="freq" value="26" /> Bi-weekly</label><label><input type="radio" name="freq" value="52" /> Weekly</label></div></div>
+      <div class="group"><span class="eyebrow">Optional</span>
+        <div class="field"><label for="p-tax">Annual property tax</label><div class="range"><input type="range" id="p-tax" min="0" max="12000" step="100" value="0" /><input class="input num" id="p-tax-n" inputmode="numeric" aria-label="Annual property tax, typed" /></div><span class="help">Calgary and Edmonton publish their own rates; a lender may collect tax with your payment.</span></div>
+      </div>
+    </Fragment>
+    <Fragment slot="result">
+      <div class="big"><span class="num" data-out="payment">$0</span><span class="per" data-out="per">/ month</span></div>
+      <p class="explain" data-out="explain"></p>
+      <dl>
+        <div><dt>Mortgage amount</dt><dd class="num" data-out="principal"></dd></div>
+        <div><dt>Mortgage insurance</dt><dd class="num" data-out="premium"></dd></div>
+        <div><dt>Total borrowed</dt><dd class="num" data-out="total"></dd></div>
+        <div><dt>Total interest over the amortization</dt><dd class="num" data-out="interest"></dd></div>
+        <div><dt>Payment including property tax</dt><dd class="num" data-out="withtax"></dd></div>
+      </dl>
+      <p class="warn" data-out="warn" hidden></p>
+      <div class="btn-row"><a class="btn btn-inverse" href="#email">Email me these numbers</a><a class="btn btn-outline-inverse" href="/start">Check it with us</a></div>
+    </Fragment>
+  </CalcShell>
+</Base>
+<script>
+  import { payment, minDownPayment, fmtMoney, type Freq } from '../../lib/mortgage';
+  import { pair, animateMoney, num, radio, setSummary } from '../../lib/calc-ui';
+  const root = document.querySelector<HTMLElement>('[data-calc="payment"]')!;
+  const q = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const out = (k: string) => q<HTMLElement>(`[data-out="${k}"]`);
+  function render() {
+    const p = num(root, 'p-price'), d = num(root, 'p-down'), r = num(root, 'p-rate'), a = num(root, 'p-amort'), tax = num(root, 'p-tax');
+    const freq = Number(radio(root, 'freq', '12')) as Freq;
+    const res = payment({ price: p, down: d, ratePct: r, amortYears: a, freq });
+    const per = freq === 12 ? 'month' : freq === 26 ? 'two weeks' : 'week';
+    animateMoney(out('payment'), res.payment);
+    out('per').textContent = `/ ${per}`;
+    out('explain').textContent = `${fmtMoney(p)} at ${r.toFixed(2)}% over ${a} years with ${(res.downPct * 100).toFixed(1)}% down${res.premium > 0 ? ', including mortgage insurance' : ''}.`;
+    animateMoney(out('principal'), res.principal);
+    out('premium').textContent = res.premium > 0 ? `${fmtMoney(res.premium)} (${(res.premiumRate * 100).toFixed(2)}%)` : 'None';
+    animateMoney(out('total'), res.totalMortgage);
+    animateMoney(out('interest'), res.totalInterest);
+    const taxPer = tax / freq;
+    out('withtax').textContent = tax > 0 ? fmtMoney(res.payment + taxPer) : 'Add property tax to see';
+    q<HTMLElement>('[data-down-help]').textContent = `Minimum for this price is ${fmtMoney(minDownPayment(p))}.`;
+    const warn = out('warn');
+    if (res.belowMinDown) { warn.textContent = `A down payment of at least ${fmtMoney(res.minDown)} is required at this price.`; warn.hidden = false; }
+    else if (p >= 1_500_000 && res.downPct < 0.2) { warn.textContent = 'From $1.5 million the minimum down payment is 20%; mortgage insurance is not available.'; warn.hidden = false; }
+    else warn.hidden = true;
+    setSummary(document, 'payment', { 'Purchase price': fmtMoney(p), 'Down payment': `${fmtMoney(d)} (${(res.downPct * 100).toFixed(1)}%)`, 'Rate': `${r.toFixed(2)}%`, 'Amortization': `${a} years`, 'Frequency': per, 'Mortgage insurance': res.premium > 0 ? fmtMoney(res.premium) : 'None', 'Total borrowed': fmtMoney(res.totalMortgage), 'Payment': `${fmtMoney(res.payment)} / ${per}`, 'Total interest': fmtMoney(res.totalInterest) });
+  }
+  pair(q('#p-price'), q('#p-price-n'), () => { q<HTMLInputElement>('#p-down').max = String(num(root, 'p-price')); render(); });
+  pair(q('#p-down'), q('#p-down-n'), render);
+  pair(q('#p-rate'), q('#p-rate-n'), render, 2);
+  pair(q('#p-tax'), q('#p-tax-n'), render);
+  q('#p-amort').addEventListener('change', render);
+  root.querySelectorAll('input[name="freq"]').forEach((el) => el.addEventListener('change', render));
+  render();
+</script>

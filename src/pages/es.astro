@@ -1,0 +1,120 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { team, whatsapp, brokerage, site, stepNames } from '../data/site';
+import group from '../assets/photos/team-grey.jpg';
+const es = team.filter((p) => p.languages.includes('Español'));
+const pasos = [
+  ['Conversación', 'Empezamos por tu objetivo, no por el papeleo. Sin jerga y sin suposiciones.'],
+  ['Revisión', 'Organizamos tu situación financiera y la traducimos a términos claros para que veas dónde estás.'],
+  ['Estrategia', 'Te mostramos las opciones reales con sus ventajas y desventajas. La decisión es tuya, y es informada.'],
+  ['Solicitud', 'Preparamos y enviamos el expediente y nos encargamos de la comunicación con el prestamista.'],
+  ['Aprobación', 'Repasamos la aprobación y cada condición línea por línea. Sin sorpresas.'],
+  ['Cierre', 'Coordinamos con tu abogado y tu agente inmobiliario hasta el desembolso.'],
+  ['Después', 'Seguimos disponibles para renovaciones, revisiones y cambios en tu situación.'],
+];
+const situaciones = [
+  ['Compro mi primera casa', 'first', 'Pago inicial, programas, preaprobación y qué pasa después de la oferta.'],
+  ['Soy nuevo en Canadá', 'new', 'Permiso de trabajo, residencia permanente o ciudadanía: qué prestamistas aceptan tu estatus.'],
+  ['Trabajo por cuenta propia', 'self', 'Tu declaración de impuestos no es tu ingreso. Mostramos el negocio que hay detrás.'],
+  ['Mi hipoteca se renueva', 'renew', 'La carta de renovación es una oferta. La comparamos con el mercado antes de que firmes.'],
+  ['Quiero usar mi plusvalía', 'refi', 'Consolidar deudas, renovar la casa, comprar otra propiedad: el costo real de cada opción.'],
+  ['Compro para rentar', 'invest', 'Primero el flujo de caja, después la propiedad.'],
+];
+---
+<Base lang="es" title="Hipotecas en Calgary y Alberta, en español | Cristina Acosta Mortgage Team" description="Asesores hipotecarios licenciados en Calgary que te explican cada paso en español: primera vivienda, recién llegados a Canadá, trabajadores independientes, renovaciones y refinanciamiento.">
+  <section class="hero">
+    <div class="container grid">
+      <div class="copy">
+        <span class="eyebrow">Asesoría hipotecaria en Calgary · En español</span>
+        <h1 class="display">Entiende cada paso.<br /><span class="soft">Avanza con confianza.</span></h1>
+        <p class="lead">Somos Mortgage Associates licenciados en Alberta. Cristina y Juan atienden en español: reuniones, llamadas y la explicación de cada documento, hasta que tengas las llaves en la mano.</p>
+        <div class="btn-row">
+          <a class="btn btn-primary btn-lg" href="#hablemos">Hablemos</a>
+          <a class="btn btn-quiet" href="/mortgages/new-to-canada">Hipotecas para recién llegados (en inglés)</a>
+        </div>
+      </div>
+      <div class="photo"><Picture src={group} formats={['avif', 'webp']} widths={[480, 720, 960]} sizes="(max-width: 900px) 92vw, 44vw" alt="Cristina Acosta, Juan Acosta y Sheryl Beaver, el equipo" loading="eager" /></div>
+    </div>
+  </section>
+
+  <section class="proof"><div class="container"><ul>
+    <li><strong>Tres asesores licenciados</strong><span>Mortgage Associates regulados por RECA, Alberta</span></li>
+    <li><strong>{brokerage.name}</strong><span>Miembro independiente de la red Mortgage Alliance</span></li>
+    <li><strong>{brokerage.lenderStatement.replace('access to', 'Acceso a').replace('lenders through', 'prestamistas a través de')}</strong><span>Bancos, cooperativas, prestamistas especializados y privados</span></li>
+    <li><strong>Tardes y fines de semana</strong><span>{site.hours[0].hours} entre semana, {site.hours[1].hours} fines de semana</span></li>
+  </ul></div></section>
+
+  <section class="section"><div class="container">
+    <div class="section-head"><span class="eyebrow">Hipotecas según tu situación</span><h2>Empieza por tu situación, no por el nombre de un producto.</h2></div>
+    <div class="cards">{situaciones.map(([t, k, d]) => <a class="card" href={`/start?for=${k}`}><h3>{t}</h3><p>{d}</p><span class="go">Hablemos de esto</span></a>)}</div>
+  </div></section>
+
+  <section class="section inverse"><div class="container">
+    <div class="section-head"><span class="eyebrow">Cada paso</span><h2>Siete pasos. Siempre sabrás en cuál estás.</h2></div>
+    <ol class="pasos">{pasos.map(([n, d], i) => <li><span class="n">{String(i + 1).padStart(2, '0')}</span><div><h3>{n}</h3><p>{d}</p></div></li>)}</ol>
+  </div></section>
+
+  <section class="section" id="hablemos"><div class="container grid2">
+    <div>
+      <span class="eyebrow">Hablemos</span>
+      <h2>Elige con quién quieres hablar.</h2>
+      <p class="lead">Una primera conversación no cuesta nada y no te compromete a nada. Escríbenos por WhatsApp, agenda una llamada o envía el formulario.</p>
+      <div class="people">
+        {es.map((p) => (
+          <div class="who">
+            <h3>{p.first} {p.name.split(' ')[1]}</h3>
+            <p class="small">{p.title} · Licencia {p.licence} · Español e inglés</p>
+            <div class="ch">
+              <a class="btn btn-wa" href={whatsapp(p, `Hola ${p.first}, te encontré en cristinaacosta.ca y tengo una pregunta sobre hipotecas.`)} target="_blank" rel="noopener"><Icon name="whatsapp" />WhatsApp</a>
+              {p.booking && <a class="btn btn-primary" href={p.booking} target="_blank" rel="noopener"><Icon name="calendar" />Agendar llamada</a>}
+              <a class="btn btn-secondary" href={p.apply} target="_blank" rel="noopener"><Icon name="docs" />Solicitud en línea</a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    <form class="form" name="contacto-es" method="POST" action="/thanks?for=message" data-netlify="true" netlify-honeypot="company">
+      <input type="hidden" name="form-name" value="contacto-es" />
+      <input type="hidden" name="language" value="es" />
+      <p class="hp"><label>Deja esto vacío <input name="company" tabindex="-1" autocomplete="off" /></label></p>
+      <div class="field"><label for="es-name">Tu nombre</label><input class="input" id="es-name" name="name" required autocomplete="name" /></div>
+      <div class="field"><label for="es-contact">Correo o celular</label><input class="input" id="es-contact" name="contact" required /></div>
+      <div class="field"><span class="label">¿Con quién prefieres hablar?</span><div class="choice">{es.map((p, i) => <label><input type="radio" name="associate" value={p.first} checked={i === 1} /> {p.first}</label>)}<label><input type="radio" name="associate" value="Anyone" /> Cualquiera</label></div></div>
+      <div class="field"><label for="es-msg">¿En qué te podemos ayudar?</label><textarea class="input" id="es-msg" name="message" rows="4" required></textarea></div>
+      <label class="consent"><input type="checkbox" name="consent" value="yes" required /><span>Acepto recibir comunicaciones de Enrich Mortgage Group, sus empresas afiliadas y agentes autorizados. Puedes retirar tu consentimiento en cualquier momento. <a href="/privacy">Privacidad (en inglés)</a></span></label>
+      <button class="btn btn-primary btn-lg" type="submit">Enviar mensaje</button>
+    </form>
+  </div></section>
+
+  <section class="section-tight legal-es"><div class="container"><p class="small">Cristina Acosta, Juan Acosta y Sheryl Beaver son Mortgage Associates con licencia del Real Estate Council of Alberta, y operan en nombre de {brokerage.name}, miembro independiente de la red Mortgage Alliance. La información de este sitio es general y no constituye una oferta de crédito. Las páginas legales en inglés, <a href="/disclosures">Disclosures</a> y <a href="/privacy">Privacy</a>, son las que rigen.</p></div></section>
+</Base>
+<style>
+  .hero { padding-block: clamp(var(--s-6), 6vw, var(--s-9)) clamp(var(--s-6), 5vw, var(--s-8)); }
+  .grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(var(--s-6), 5vw, var(--s-9)); align-items: center; }
+  .copy { display: grid; gap: var(--s-5); }
+  .soft { color: var(--beige-700); }
+  .photo :global(img) { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; object-position: center top; border-radius: var(--radius-lg); background: var(--surface-2); }
+  .proof { border-top: var(--hairline); border-bottom: var(--hairline); background: var(--surface); }
+  .proof ul { list-style: none; margin: 0; padding: var(--s-5) 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-5); }
+  .proof li { display: grid; gap: 2px; font-size: var(--fs-small); color: var(--text-muted); padding-left: var(--s-4); border-left: 2px solid var(--beige-500); }
+  .proof strong { font-family: var(--display); font-weight: 500; font-size: 1rem; color: var(--text); }
+  .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
+  .cards h3 { font-size: 1.15rem; font-weight: 600; }
+  .pasos { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--s-4); }
+  .pasos li { display: grid; gap: var(--s-2); align-content: start; border-top: 2px solid var(--beige-500); padding-top: var(--s-3); }
+  .pasos .n { font-family: var(--display); font-weight: 600; color: var(--beige-500); font-size: .85rem; }
+  .pasos h3 { font-size: 1rem; font-weight: 600; }
+  .pasos p { font-size: var(--fs-small); color: var(--inverse-muted); }
+  .grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-8); align-items: start; }
+  .people { display: grid; gap: var(--s-4); margin-top: var(--s-5); }
+  .who { background: var(--surface); border: var(--hairline); padding: var(--s-5); border-radius: var(--radius); display: grid; gap: var(--s-2); }
+  .who h3 { font-size: 1.3rem; }
+  .ch { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-2); }
+  .form { display: grid; gap: var(--s-4); background: var(--surface); border: var(--hairline); padding: var(--s-6); border-radius: var(--radius); }
+  .legal-es { border-top: var(--hairline); }
+  @media (max-width: 1000px) { .pasos { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (max-width: 900px) { .grid, .grid2, .cards { grid-template-columns: 1fr; } .photo { order: -1; max-width: 420px; } .proof ul { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .pasos { grid-template-columns: 1fr; } .proof ul { grid-template-columns: 1fr; } }
+</style>

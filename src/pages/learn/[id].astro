@@ -1,0 +1,69 @@
+---
+import Base from '../../layouts/Base.astro';
+import StartBlock from '../../components/StartBlock.astro';
+import { getCollection, render } from 'astro:content';
+import { team, site } from '../../data/site';
+
+export async function getStaticPaths() {
+  const guides = await getCollection('learn');
+  return guides.map((g) => ({ params: { id: g.id }, props: { g } }));
+}
+const { g } = Astro.props;
+const { Content } = await render(g);
+const author = team.find((p) => p.slug === g.data.author)!;
+const fmt = (d: Date) => d.toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
+const schema = {
+  '@context': 'https://schema.org', '@type': 'Article', headline: g.data.title, description: g.data.description,
+  datePublished: g.data.published.toISOString(), dateModified: g.data.verified.toISOString(),
+  author: { '@type': 'Person', name: author.name, jobTitle: author.title, url: `${site.url}/about/${author.slug}` },
+  publisher: { '@type': 'Organization', name: site.name, url: site.url },
+  mainEntityOfPage: `${site.url}/learn/${g.id}`, inLanguage: 'en-CA',
+};
+const related = (await getCollection('learn')).filter((x) => x.id !== g.id).slice(0, 3);
+---
+<Base title={g.data.title} description={g.data.description} schema={schema}>
+  <!-- QA verify before launch: {g.data.verify.join(' | ')} -->
+  <article class="guide">
+    <header class="head"><div class="container narrow">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/learn">Learn</a><span aria-hidden="true">/</span><span aria-current="page">{g.data.stage}</span></nav>
+      <span class="eyebrow">{g.data.stage}</span>
+      <h1>{g.data.title}</h1>
+      <p class="lead">{g.data.description}</p>
+      <p class="byline">By <a href={`/about/${author.slug}`}>{author.name}</a>, {author.title} · Published {fmt(g.data.published)} · Verified {fmt(g.data.verified)}</p>
+    </div></header>
+    <div class="section-tight"><div class="container narrow prose"><Content /></div></div>
+    <aside class="section-tight tail"><div class="container narrow">
+      {g.data.sources.length > 0 && <div><span class="eyebrow">Sources</span><ul>{g.data.sources.map((s) => <li><a href={s.url} target="_blank" rel="noopener">{s.name}</a></li>)}</ul></div>}
+      <div class="ctas">
+        {g.data.tool && <a class="btn btn-primary" href={g.data.tool}>Open the related calculator</a>}
+        {g.data.situation && <a class="btn btn-secondary" href={g.data.situation}>See the steps for this situation</a>}
+      </div>
+      <p class="small">General information, not advice for your situation and not an offer of credit. Rules change; the verified date above is when this guide was last checked.</p>
+    </div></aside>
+    <section class="section-tight more"><div class="container">
+      <span class="eyebrow">More guides</span>
+      <div class="grid">{related.map((r) => <a class="card" href={`/learn/${r.id}`}><h2>{r.data.title}</h2><p>{r.data.description}</p><span class="go">Read</span></a>)}</div>
+    </div></section>
+    <StartBlock title={`Talk to ${author.first} about your situation.`} />
+  </article>
+</Base>
+<style>
+  .head { padding-block: clamp(var(--s-6), 5vw, var(--s-8)); border-bottom: var(--hairline); }
+  .narrow { max-width: 760px; }
+  .head .narrow { display: grid; gap: var(--s-4); }
+  .crumbs { font-size: var(--fs-small); color: var(--text-muted); display: flex; gap: var(--s-2); flex-wrap: wrap; }
+  .crumbs a { color: var(--text-muted); text-decoration: none; }
+  .byline { font-size: var(--fs-small); color: var(--text-muted); }
+  .prose :global(h2) { font-size: var(--fs-h3); margin: var(--s-6) 0 var(--s-3); }
+  .prose :global(h3) { font-size: 1.15rem; margin: var(--s-5) 0 var(--s-2); }
+  .prose :global(p), .prose :global(li) { font-size: 1.05rem; }
+  .prose :global(ul), .prose :global(ol) { margin: 0 0 1em; display: grid; gap: .4em; }
+  .prose :global(strong) { font-weight: 500; }
+  .tail { background: var(--surface); border-top: var(--hairline); }
+  .tail .narrow { display: grid; gap: var(--s-4); }
+  .tail ul { padding-left: 1.1em; }
+  .ctas { display: flex; flex-wrap: wrap; gap: var(--s-3); }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
+  .grid h2 { font-size: 1.1rem; font-weight: 600; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+</style>

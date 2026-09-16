@@ -1,0 +1,92 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PersonCard from '../../components/PersonCard.astro';
+import StartBlock from '../../components/StartBlock.astro';
+import { team, brokerage, stepNames, pathCopy } from '../../data/site';
+import group from '../../assets/photos/team.jpg';
+const stepDetail = [
+  'We start with what you want, not with paperwork. No jargon, no assumptions, and no pressure to decide anything on the first call.',
+  'We organize your financial picture and translate it into plain terms, so you can see exactly where you stand and what would change the number.',
+  'We lay out the real options across lenders with the trade-offs explained. The decision is yours, and it is an informed one.',
+  'We prepare and submit the file, handle the lender’s questions, and chase documents so you do not have to.',
+  'We walk through the approval and every condition line by line, so nothing in the fine print is a surprise.',
+  'We coordinate with your lawyer and realtor through to funding, and we are reachable on closing day.',
+  'We stay available after closing: renewals, reviews, a change in your circumstances. The file does not close when the deal does.',
+];
+---
+<Base title="The Team | Cristina Acosta Mortgage Team" description="Three licensed Mortgage Associates in Calgary with Enrich Mortgage Group, a Mortgage Alliance network member. How we work, the seven steps, and why clients choose us.">
+  <header class="head">
+    <div class="container grid">
+      <div>
+        <span class="eyebrow">The team</span>
+        <h1>Three Mortgage Associates. One way of working.</h1>
+        <p class="lead">Cristina Acosta Mortgage Team grew out of one person’s reputation for explaining things properly. It is now three licensed associates who hold the same standard: you understand every step, and you decide.</p>
+      </div>
+      <div class="photo"><Picture src={group} formats={['avif', 'webp']} widths={[640, 960, 1280]} sizes="(max-width: 900px) 92vw, 50vw" alt="Cristina Acosta, Juan Acosta and Sheryl Beaver together" loading="eager" /></div>
+    </div>
+  </header>
+
+  <section class="section people">
+    <div class="container">
+      <div class="cards">{team.map((p) => <PersonCard person={p} />)}</div>
+    </div>
+  </section>
+
+  <section class="section story inverse">
+    <div class="container narrow">
+      <span class="eyebrow">Why this team exists</span>
+      <h2>Clarity that backs you up.</h2>
+      <p>Everything begins at the moment people feel uncertain in front of an important decision. Not because they cannot handle it, but because nobody explained it clearly. This team was built for that moment: to turn confusion into security, and doubt into confidence.</p>
+      <p>There are no empty promises here. There are precise processes, transparent information, and real guidance at every step. We do not sell financial products. We help people understand, so they can move forward.</p>
+    </div>
+  </section>
+
+  <section class="section steps">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">How we work</span><h2>Seven steps, and you know where you are in every one of them.</h2></div>
+      <ol class="list">
+        {stepNames.map((n, i) => <li><span class="n">{String(i + 1).padStart(2, '0')}</span><div><h3>{n}</h3><p>{stepDetail[i]}</p></div></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section-tight brokerage">
+    <div class="container grid2">
+      <div>
+        <span class="eyebrow">The brokerage behind the team</span>
+        <h2>{brokerage.name}</h2>
+        <p>We are licensed Mortgage Associates dealing in mortgages in the name of {brokerage.name}, an independently owned and operated network member of Mortgage Alliance. That gives us {brokerage.lenderStatement}: banks, credit unions, monoline lenders and private capital, so the file goes where it fits.</p>
+        <p class="small">Regulated by the {brokerage.regulator}. Licence numbers appear beside each of our names and on every page of this site.</p>
+      </div>
+      <div class="addr">
+        <span class="eyebrow">Office</span>
+        <p>{brokerage.address.line1}<br />{brokerage.address.city}, {brokerage.address.province} {brokerage.address.postal}</p>
+        <p><a href={brokerage.address.mapsUrl} target="_blank" rel="noopener">Open in maps</a></p>
+        <p class="small">Most meetings happen by phone or video, in the evening or on weekends. In-person by appointment.</p>
+      </div>
+    </div>
+  </section>
+
+  <StartBlock />
+</Base>
+<style>
+  .head { padding-block: clamp(var(--s-6), 5vw, var(--s-8)); }
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(var(--s-6), 5vw, var(--s-9)); align-items: center; }
+  .grid > div:first-child { display: grid; gap: var(--s-4); }
+  .photo :global(img) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius-lg); background: var(--surface-2); }
+  .people { border-top: var(--hairline); }
+  .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
+  .narrow { max-width: 760px; }
+  .story h2 { margin-bottom: var(--s-4); }
+  .story p { font-size: 1.1rem; }
+  .list { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s-5); max-width: 820px; }
+  .list li { display: grid; grid-template-columns: 56px 1fr; gap: var(--s-4); padding-bottom: var(--s-5); border-bottom: var(--hairline); }
+  .n { font-family: var(--display); font-weight: 600; font-size: 1.4rem; color: var(--beige-700); }
+  .list h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: var(--s-2); }
+  .list p { color: var(--text-muted); }
+  .brokerage { background: var(--surface); border-top: var(--hairline); }
+  .grid2 { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, .8fr); gap: var(--s-8); }
+  .brokerage h2 { font-size: var(--fs-h3); margin: var(--s-2) 0 var(--s-3); }
+  @media (max-width: 900px) { .grid, .grid2, .cards { grid-template-columns: 1fr; } }
+</style>

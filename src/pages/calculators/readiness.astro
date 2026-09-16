@@ -1,0 +1,82 @@
+---
+import Base from '../../layouts/Base.astro';
+import StartBlock from '../../components/StartBlock.astro';
+import Icon from '../../components/Icon.astro';
+const qs = [
+  { id: 'status', q: 'Your status in Canada', opts: [['citizen', 'Citizen or permanent resident'], ['permit', 'Work permit'], ['other', 'Other or not sure']] },
+  { id: 'income', q: 'How you earn', opts: [['employee', 'Employee, salaried or hourly'], ['self', 'Self-employed, contract or commission'], ['mixed', 'A mix, or between jobs']] },
+  { id: 'years', q: 'How long in your current work', opts: [['2', 'Two years or more'], ['1', 'Six months to two years'], ['0', 'Less than six months']] },
+  { id: 'savings', q: 'Savings for a down payment and closing', opts: [['5', '5% of the price or more, plus closing costs'], ['some', 'Some, but under 5%'], ['none', 'Not yet']] },
+  { id: 'credit', q: 'Your credit, as you understand it', opts: [['good', 'Paid on time, no surprises'], ['thin', 'Short history or new to Canada'], ['issues', 'Late payments, collections or a consumer proposal']] },
+  { id: 'when', q: 'When you would like to buy', opts: [['now', 'In the next three months'], ['year', 'Within a year'], ['later', 'More than a year away']] },
+];
+---
+<Base title="Am I Ready to Buy? First-Time Buyer Readiness Check" description="Six quick questions about status, income, savings, credit and timing. No score, just the right next step for a first-time buyer in Alberta.">
+  <article class="ready">
+    <header class="head"><div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/calculators">Calculators</a><span aria-hidden="true">/</span><span aria-current="page">Readiness check</span></nav>
+      <span class="eyebrow">Readiness check</span>
+      <h1>Am I ready to buy?</h1>
+      <p class="lead">Six questions, no score, no email required. You get the next step that fits where you are, and the person on the team who handles it.</p>
+    </div></header>
+    <section class="section-tight"><div class="container layout">
+      <form class="qs" onsubmit="return false" data-ready>
+        {qs.map((x, i) => (
+          <fieldset class="qset"><legend><span class="n">{String(i + 1).padStart(2, '0')}</span>{x.q}</legend>
+            <div class="choice">{x.opts.map(([v, l], j) => <label><input type="radio" name={x.id} value={v} checked={j === 0} /> {l}</label>)}</div>
+          </fieldset>
+        ))}
+      </form>
+      <aside class="verdict" aria-live="polite">
+        <span class="eyebrow">Your next step</span>
+        <h2 data-out="title">Get pre-approved.</h2>
+        <p data-out="body"></p>
+        <ul class="tips" data-out="tips"></ul>
+        <div class="btn-row"><a class="btn btn-inverse" data-out="cta" href="/start?for=first">Book a conversation</a><a class="btn btn-outline-inverse" href="/calculators/affordability">Check my buying power</a></div>
+        <p class="small-inv">Not a decision on any application. Programs and rules change; a conversation confirms your case.</p>
+      </aside>
+    </div></section>
+    <StartBlock title="Whatever the answer, the next step is a conversation." />
+  </article>
+</Base>
+<style>
+  .head { padding-block: clamp(var(--s-6), 5vw, var(--s-8)); border-bottom: var(--hairline); }
+  .head .container { display: grid; gap: var(--s-4); max-width: 860px; margin-inline: auto; }
+  .crumbs { font-size: var(--fs-small); color: var(--text-muted); display: flex; gap: var(--s-2); }
+  .crumbs a { color: var(--text-muted); text-decoration: none; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: var(--s-6); align-items: start; }
+  .qs { display: grid; gap: var(--s-5); }
+  .qset { border: 0; padding: 0; margin: 0; display: grid; gap: var(--s-3); }
+  legend { font-family: var(--display); font-weight: 500; font-size: 1.05rem; padding: 0; margin-bottom: var(--s-2); display: flex; gap: var(--s-3); align-items: baseline; }
+  legend .n { color: var(--beige-700); font-size: .85rem; }
+  .verdict { background: var(--inverse-bg); color: var(--inverse-text); padding: var(--s-6); border-radius: var(--radius); position: sticky; top: calc(var(--header-h) + var(--s-4)); display: grid; gap: var(--s-3); }
+  .verdict .eyebrow { color: var(--inverse-muted); margin: 0; }
+  .verdict h2 { color: var(--inverse-text); font-size: var(--fs-h3); }
+  .tips { margin: 0; padding-left: 1.1em; font-size: var(--fs-small); color: var(--inverse-muted); display: grid; gap: 6px; }
+  .small-inv { font-size: .72rem; color: var(--inverse-muted); }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .verdict { position: static; } }
+</style>
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-ready]')!;
+  const out = (k: string) => document.querySelector<HTMLElement>(`[data-out="${k}"]`)!;
+  const get = (n: string) => (form.querySelector<HTMLInputElement>(`input[name="${n}"]:checked`)?.value ?? '');
+  function render() {
+    const s = get('status'), inc = get('income'), yrs = get('years'), sav = get('savings'), cr = get('credit'), when = get('when');
+    let title = 'Get pre-approved.', body = 'Your answers point to a file most lenders will read well. A pre-approval tells you your ceiling and holds a rate for 90 to 120 days.', cta = '/start?for=first', ctaText = 'Book a pre-approval conversation';
+    const tips: string[] = [];
+    if (s === 'other') { title = 'Start with a status conversation.'; body = 'Lending depends on your status in Canada. Some situations qualify under newcomer programs; some need a different plan first. Ten minutes with Cristina or Juan settles which.'; cta = '/start?for=new'; ctaText = 'Talk to Cristina or Juan'; }
+    else if (sav === 'none') { title = 'Plan the down payment first.'; body = 'Without savings there is no file yet, but there is a plan: a savings target for the price range you want, the accounts that make it faster, and a date. That is a written plan we give you for free.'; cta = '/start?for=first'; ctaText = 'Get a savings plan'; tips.push('An FHSA and the Home Buyers’ Plan can shorten the timeline.'); }
+    else if (cr === 'issues') { title = 'Start with a credit conversation.'; body = 'Late payments or a proposal do not end the story, but they decide which lenders and what timing. We look at the report with you and set out what changes the answer.'; cta = '/start?for=first'; ctaText = 'Book a credit conversation'; }
+    else if (inc === 'self' && yrs !== '2') { title = 'Talk to Juan about your income.'; body = 'Self-employed with under two years is workable with the right lender and documents, but the route matters. A short conversation shows which route and what it costs.'; cta = '/start?for=self'; ctaText = 'Talk to Juan'; }
+    else if (yrs === '0' && inc !== 'self') { title = 'Almost. Let your probation end first.'; body = 'Most lenders want you past probation or with six months in the role. Use the time to get the documents lined up and a pre-approval ready to go the week you qualify.'; }
+    else if (s === 'permit') { title = 'Get pre-approved under a newcomer program.'; body = 'Work permit holders qualify with several lenders when time in Canada and permit length fit the program. Cristina and Juan work these files every week.'; cta = '/start?for=new'; ctaText = 'Talk to Cristina or Juan'; }
+    if (sav === 'some') tips.push('Under 5% saved: the readiness date is when you cross it, plus closing costs of roughly 1.5% of the price in Alberta.');
+    if (cr === 'thin') tips.push('A short credit history is fine with the right program; twelve months of on-time rent and utilities can stand in.');
+    if (when === 'later') tips.push('More than a year out: a conversation now sets the targets; the pre-approval comes later.');
+    if (when === 'now' && title.startsWith('Get pre-approved')) tips.push('Buying within three months: book this week so the pre-approval is ready before you make an offer.');
+    out('title').textContent = title; out('body').textContent = body;
+    out('tips').innerHTML = tips.map((t) => `<li>${t}</li>`).join('');
+    const a = out('cta') as HTMLAnchorElement; a.href = cta; a.textContent = ctaText;
+  }
+  form.addEventListener('change', render); render();
+</script>
