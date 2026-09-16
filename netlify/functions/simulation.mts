@@ -55,7 +55,7 @@ export default async (req: Request, _ctx: Context) => {
     send({ from, to: [body.email], reply_to: assocMail, subject: `Your ${tool} numbers from Cristina Acosta Mortgage Team`, html: visitorHtml }),
     send({ from, to: [assocMail, teamInbox].filter((v, i, arr) => arr.indexOf(v) === i), reply_to: body.email, subject: `Simulation lead: ${body.name} (${tool})`, html: teamHtml }),
   ]);
-  if (!a.ok) return new Response('Send failed', { status: 502 });
+  if (!a.ok) { const detail = await a.text().catch(() => ''); console.error('Resend error', a.status, detail); return new Response('Send failed: ' + detail.slice(0, 300), { status: 502 }); }
   return new Response(JSON.stringify({ ok: true, notified: b.ok }), { status: 200, headers: { 'Content-Type': 'application/json' } });
 };
 
