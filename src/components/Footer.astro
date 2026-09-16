@@ -1,0 +1,67 @@
+---
+import Icon from './Icon.astro';
+import { site, brokerage, team } from '../data/site';
+const year = new Date().getFullYear();
+const licences = team.map((p) => `${p.name} (${p.licence})`).join(', ');
+---
+<footer class="site-footer inverse">
+  <div class="container">
+    <div class="grid">
+      <div>
+        <h2 class="name">Cristina Acosta Mortgage Team</h2>
+        <p class="brok">{brokerage.name}<br />{brokerage.address.line1}, {brokerage.address.city}, {brokerage.address.province} {brokerage.address.postal}<br /><a href={`mailto:${site.email}`}>{site.email}</a></p>
+        <div class="aff">
+          <span>Independently owned &amp; operated<br />network member of</span>
+          <span class="ma" aria-label="Mortgage Alliance">MORTGAGE ALLIANCE</span>
+        </div>
+      </div>
+      <div>
+        <h3>Site</h3>
+        <ul>
+          <li><a href="/mortgages">Mortgages</a></li>
+          <li><a href="/calculators">Calculators</a></li>
+          <li><a href="/about">Team</a></li>
+          <li><a href="/learn">Learn</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Legal and social</h3>
+        <ul>
+          <li><a href="/disclosures">Disclosures</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/es" lang="es">Español</a></li>
+          <li class="social">
+            <a href={site.social.instagram} rel="noopener" target="_blank" aria-label="Instagram"><Icon name="instagram" /></a>
+            <a href={site.social.tiktok} rel="noopener" target="_blank" aria-label="TikTok"><Icon name="tiktok" /></a>
+            <a href={site.social.facebook} rel="noopener" target="_blank" aria-label="Facebook"><Icon name="facebook" /></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <p class="legal">
+      {licences} are Mortgage Associates licensed by the {brokerage.regulator}, dealing in mortgages in the name of {brokerage.name}.
+      Information on this site is general in nature and is not an offer, commitment or approval of credit. All applications are subject to lender approval, credit review and lending guidelines. Rates and products change without notice.
+      © {year} Cristina Acosta Mortgage Team.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer { padding-block: var(--s-8) calc(var(--s-7) + var(--mobile-bar-h)); font-size: .9rem; }
+  .grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--s-6); }
+  .name { font-size: 1.05rem; font-weight: 500; margin-bottom: var(--s-3); }
+  h3 { font-family: var(--display); font-weight: 500; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--inverse-muted); margin: 0 0 var(--s-3); }
+  .brok { color: var(--inverse-muted); line-height: 1.6; }
+  ul { list-style: none; padding: 0; margin: 0; }
+  li { margin-bottom: 6px; }
+  a { color: var(--inverse-text); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .aff { display: flex; align-items: center; gap: var(--s-3); margin-top: var(--s-4); font-size: .75rem; color: var(--inverse-muted); }
+  .ma { display: inline-block; border: 1.5px solid var(--inverse-text); color: var(--inverse-text); padding: 4px 8px; font-family: var(--display); font-weight: 600; font-size: .7rem; letter-spacing: .06em; }
+  .social { display: flex; gap: var(--s-3); margin-top: var(--s-3); }
+  .social a { display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; border: 1px solid var(--inverse-line); border-radius: 50%; }
+  .legal { border-top: 1px solid var(--inverse-line); margin-top: var(--s-6); padding-top: var(--s-4); color: var(--inverse-muted); font-size: .78rem; line-height: 1.55; max-width: none; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  @media (min-width: 901px) { .site-footer { padding-bottom: var(--s-7); } }
+</style>

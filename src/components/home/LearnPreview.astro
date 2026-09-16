@@ -1,0 +1,26 @@
+---
+const guides = [
+  { href: '/learn/pre-approval-alberta', stage: 'Before you buy', t: 'What you need to get pre-approved in Alberta', d: 'Income, down payment, credit, ID and the documents lenders ask for, in the order they ask.' },
+  { href: '/learn/closing-costs-alberta', stage: 'Before you buy', t: 'Closing costs in Alberta: no land transfer tax, but not zero', d: 'Legal fees, title registration, appraisal, adjustments and what to have in cash on closing day.' },
+  { href: '/learn/renewal-letter', stage: 'Owning and renewing', t: 'Your renewal letter: what to do 120 days before', d: 'Why the first offer is rarely the best one, and how switching works without a lawyer.' },
+];
+---
+<section class="section learn" aria-labelledby="learn-title">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Learn</span>
+      <h2 id="learn-title">The questions from the first meeting, answered in writing.</h2>
+    </div>
+    <div class="grid">
+      {guides.map((g) => (
+        <a class="card reveal" href={g.href}><span class="stage">{g.stage}</span><h3>{g.t}</h3><p>{g.d}</p><span class="go">Read the guide</span></a>
+      ))}
+    </div>
+  </div>
+</section>
+<style>
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
+  .stage { font-family: var(--display); font-weight: 500; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--beige-700); }
+  .card h3 { font-size: 1.15rem; font-weight: 600; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+</style>

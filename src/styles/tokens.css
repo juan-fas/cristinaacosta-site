@@ -1,0 +1,48 @@
+/* Design tokens. Source of truth: Phase 4 design system.
+   Change a value here and every page follows. */
+@font-face { font-family: 'Giga Sans'; font-weight: 600; font-style: normal; font-display: swap; src: url('/fonts/gigasans-semibold.woff2') format('woff2'); }
+@font-face { font-family: 'Giga Sans'; font-weight: 500; font-style: normal; font-display: swap; src: url('/fonts/gigasans-medium.woff2') format('woff2'); }
+@font-face { font-family: 'Giga Sans'; font-weight: 400; font-style: normal; font-display: swap; src: url('/fonts/gigasans-regular.woff2') format('woff2'); }
+
+:root {
+  /* brand */
+  --blue-900: #0B1C57; --blue-800: #102570; --blue-700: #163191; --blue-600: #2A47A8; --blue-500: #4560BC; --blue-100: #DDE3F5; --blue-050: #EEF1FA;
+  --beige-700: #8E7E6A; --beige-500: #BAAA97; --beige-300: #D6CBBB; --beige-200: #E4DCD0; --beige-100: #EFE9E0;
+  --cream: #F4EFE9; --paper: #FBF9F6; --ink: #191714; --ink-700: #3B3733; --ink-500: #5D5852;
+  --gold: #C9952A; --slate: #8A97A6;
+  --ok: #2F6B3F; --ok-bg: #E4EFE6; --warn: #9A6A10; --warn-bg: #F6ECD6; --err: #9C2F2F; --err-bg: #F7E3E3;
+
+  /* roles */
+  --bg: var(--cream); --surface: var(--paper); --surface-2: var(--beige-100);
+  --text: var(--ink); --text-muted: var(--ink-500);
+  --line: var(--beige-300); --line-strong: var(--beige-500);
+  --accent: var(--blue-700); --accent-hover: var(--blue-800); --on-accent: var(--cream);
+  --accent-soft: var(--blue-050); --focus: var(--blue-600); --mark: var(--gold);
+  --inverse-bg: var(--blue-700); --inverse-bg-deep: var(--blue-800); --inverse-text: var(--cream);
+  --inverse-muted: rgba(244, 239, 233, .66); --inverse-line: rgba(186, 170, 151, .35);
+
+  /* type */
+  --display: 'Giga Sans', 'Segoe UI', system-ui, Arial, sans-serif;
+  --body: 'Roboto', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --fs-display: clamp(2.75rem, 2rem + 3.5vw, 4.5rem);
+  --fs-h1: clamp(2.25rem, 1.7rem + 2.5vw, 3.5rem);
+  --fs-h2: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+  --fs-h3: clamp(1.375rem, 1.2rem + .7vw, 1.75rem);
+  --fs-h4: 1.125rem;
+  --fs-lead: clamp(1.125rem, 1rem + .4vw, 1.3rem);
+  --fs-body: 1.0625rem; --fs-small: .875rem; --fs-eyebrow: .75rem;
+
+  /* space, 4px base */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px; --s-10: 128px;
+  --container: 1200px; --gutter: clamp(16px, 4vw, 40px);
+  --radius: 2px; --radius-lg: 4px;
+  --hairline: 1px solid var(--line);
+  --shadow-sticky: 0 8px 24px rgba(25, 23, 20, .10);
+
+  /* motion */
+  --dur-fast: 160ms; --dur: 260ms; --dur-slow: 480ms;
+  --ease: cubic-bezier(.2, .7, .2, 1); --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+
+  --header-h: 72px; --mobile-bar-h: 60px;
+  color-scheme: light;
+}

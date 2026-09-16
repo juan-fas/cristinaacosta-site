@@ -1,0 +1,31 @@
+---
+const reasons = [
+  { t: 'Meetings take the time they need', d: 'A bank appointment is a race against the clock. Ours ends when your questions do.' },
+  { t: 'We answer in the evening and on weekends', d: 'Most people can only deal with a mortgage after work. So that is when we work.' },
+  { t: 'We tell you when the right move is to wait', d: 'Sometimes the honest advice is not to buy yet. We would rather earn a client next year than a deal today.' },
+  { t: 'We have been newcomers ourselves', d: 'We know what a Canadian lender needs to see from a foreign income history, because we have lived it.' },
+  { t: 'The product a single bank cannot offer', d: 'A bank sells its own shelf. We have access to 249 lenders through Mortgage Alliance, so the file goes where it fits.' },
+  { t: 'You always know what is happening', d: 'Every update, every condition, every next step, explained before you have to ask.' },
+];
+---
+<section class="section why" aria-labelledby="why-title">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Why people work with us</span>
+      <h2 id="why-title">It is more than the rate. It is how the whole thing feels.</h2>
+    </div>
+    <ul class="list">
+      {reasons.map((r) => (
+        <li class="reveal"><h3>{r.t}</h3><p>{r.d}</p></li>
+      ))}
+    </ul>
+  </div>
+</section>
+<style>
+  .list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6) var(--s-6); }
+  li { border-top: 2px solid var(--beige-500); padding-top: var(--s-4); }
+  h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: var(--s-2); }
+  p { font-size: var(--fs-small); color: var(--text-muted); }
+  @media (max-width: 900px) { .list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 520px) { .list { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import { team } from '../data/site';
+---
+<Base title="Thank you" description="We received your message." noindex={true}>
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Received</span>
+      <h1 data-thanks-title>Thank you. We will be in touch soon.</h1>
+      <p class="lead" data-thanks-lead>During our hours we usually reply within 30 minutes by email, faster by phone. Evenings and weekends included.</p>
+      <div class="btn-row" style="margin-top:var(--s-6)">
+        <a class="btn btn-primary" href="/calculators">Try a calculator while you wait</a>
+        <a class="btn btn-quiet" href="/">Back to the home page</a>
+      </div>
+    </div>
+  </section>
+</Base>
+<script>
+  const kind = new URLSearchParams(location.search).get('for');
+  const t = document.querySelector('[data-thanks-title]'), l = document.querySelector('[data-thanks-lead]');
+  if (kind === 'renewal' && t && l) { t.textContent = 'Noted. We will check the market 90 days before your renewal.'; l.textContent = 'You will hear from the associate you chose with a comparison of your lender’s offer against the market, and nothing before then unless you ask.'; }
+</script>

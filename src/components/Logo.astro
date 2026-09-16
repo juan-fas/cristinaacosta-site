@@ -1,0 +1,15 @@
+---
+/* Vector logotype from the brand's Illustrator file, recoloured to manual hex values via CSS. */
+import logo from '../assets/logo.svg?raw';
+interface Props { class?: string; inverse?: boolean; title?: string }
+const { class: cls = '', inverse = false, title = 'Cristina Acosta Mortgage Team' } = Astro.props;
+const svg = logo.replace('aria-label="Cristina Acosta Mortgage Team"', `aria-label="${title}"`);
+---
+<span class:list={['logo', cls, { inverse }]} set:html={svg} />
+<style is:global>
+  .logo { display: inline-block; line-height: 0; }
+  .logo svg { width: 100%; height: auto; }
+  .logo .logo-fill-blue { fill: var(--blue-700); }
+  .logo .logo-fill-beige { fill: var(--beige-500); }
+  .logo.inverse .logo-fill-blue { fill: var(--cream); }
+</style>

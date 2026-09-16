@@ -1,0 +1,85 @@
+---
+import { stepNames, pathCopy } from '../../data/site';
+const first = pathCopy.first;
+---
+<section class="path section" aria-labelledby="path-title" data-path-section>
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Understand every step</span>
+      <h2 id="path-title">Seven steps. You will know where you are in every one of them.</h2>
+      <p class="lead" data-path-lead>Here is how it goes for first-time buyers. Choose a different situation above and the steps change with it.</p>
+    </div>
+    <ol class="steps" data-steps>
+      {stepNames.map((name, i) => (
+        <li class="step" data-step={i}>
+          <span class="track" aria-hidden="true"><span class="mark">+</span></span>
+          <span class="n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <h3>{name}</h3>
+          <p data-copy>{first[i]}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+  <script type="application/json" data-path-copy set:html={JSON.stringify(pathCopy)} />
+</section>
+
+<style>
+  .steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--s-3); }
+  .step { display: grid; gap: var(--s-2); align-content: start; padding-top: var(--s-4); }
+  .track { display: block; height: 3px; background: var(--line); position: relative; margin-bottom: var(--s-3); }
+  .track::after { content: ''; position: absolute; inset: 0; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform var(--dur-slow) var(--ease); }
+  .step.on .track::after { transform: scaleX(1); }
+  .mark { position: absolute; right: -6px; top: -15px; font-family: var(--display); font-weight: 600; font-size: 1.1rem; line-height: 1; color: var(--mark); opacity: 0; transition: opacity var(--dur) var(--ease); }
+  .step.cur .mark { opacity: 1; }
+  .n { font-family: var(--display); font-weight: 600; font-size: .8rem; color: var(--beige-700); letter-spacing: .08em; }
+  h3 { font-size: 1.05rem; font-weight: 600; }
+  p { font-size: var(--fs-small); color: var(--text-muted); margin: 0; transition: opacity var(--dur) var(--ease); }
+  p.swap { opacity: 0; }
+  @media (max-width: 1000px) { .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (max-width: 640px) {
+    .steps { grid-template-columns: 1fr; gap: 0; }
+    .step { grid-template-columns: 28px 1fr; grid-template-areas: 'track n' 'track title' 'track copy'; column-gap: var(--s-4); padding: 0 0 var(--s-5); }
+    .track { grid-area: track; width: 3px; height: auto; margin: 0; }
+    .track::after { transform: scaleY(0); transform-origin: top; }
+    .step.on .track::after { transform: scaleY(1); }
+    .mark { right: auto; left: -6px; top: -4px; }
+    .n { grid-area: n; } h3 { grid-area: title; } p { grid-area: copy; }
+  }
+  @media (prefers-reduced-motion: reduce) { .step .track::after { transform: none; } .mark { opacity: 1; } }
+</style>
+
+<script>
+  import { situationStore } from '../../lib/situation';
+  const section = document.querySelector('[data-path-section]')!;
+  const copy = JSON.parse(section.querySelector('[data-path-copy]')!.textContent || '{}') as Record<string, string[]>;
+  const steps = Array.from(section.querySelectorAll<HTMLElement>('[data-step]'));
+  const lead = section.querySelector<HTMLElement>('[data-path-lead]');
+  const leadCopy: Record<string, string> = {
+    first: 'Here is how it goes for first-time buyers. Choose a different situation above and the steps change with it.',
+    new: 'Here is how it goes when you are new to Canada. The order is the same; what we check at each step is not.',
+    self: 'Here is how it goes when you are self-employed. The review step is where most of the work happens.',
+    renew: 'Here is how a renewal goes when you treat it as a decision instead of a formality.',
+    refi: 'Here is how a refinance goes, from the reason to the funds at your lawyer.',
+    invest: 'Here is how buying a rental goes. Cash flow is decided before the property is.',
+    commercial: 'Here is how a commercial file goes, including when a specialist partner leads.',
+  };
+  situationStore.subscribe((key) => {
+    const lines = copy[key] || copy.first;
+    steps.forEach((s, i) => {
+      const p = s.querySelector<HTMLElement>('[data-copy]')!;
+      p.classList.add('swap');
+      setTimeout(() => { p.textContent = lines[i]; p.classList.remove('swap'); }, 200);
+    });
+    if (lead) lead.textContent = leadCopy[key] || leadCopy.first;
+  });
+  // Fill the path as the visitor scrolls through it.
+  let reached = -1;
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const i = Number((e.target as HTMLElement).dataset.step);
+      if (i > reached) { reached = i; steps.forEach((s, j) => { s.classList.toggle('on', j <= reached); s.classList.toggle('cur', j === reached); }); }
+    }
+  }, { threshold: 0.6 });
+  steps.forEach((s) => io.observe(s));
+</script>

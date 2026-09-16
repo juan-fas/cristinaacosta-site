@@ -1,0 +1,82 @@
+---
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileBar from '../components/MobileBar.astro';
+import { site, brokerage, team } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  lang?: 'en' | 'es';
+  ogImage?: string;
+  noindex?: boolean;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+  bodyClass?: string;
+}
+const { title, description, lang = 'en', ogImage = '/og/default.png', noindex = false, schema, bodyClass = '' } = Astro.props;
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', site.url).href;
+const fullTitle = title.includes('Cristina Acosta') ? title : `${title} | Cristina Acosta Mortgage Team`;
+
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FinancialService',
+  '@id': `${site.url}/#org`,
+  name: site.name,
+  url: site.url,
+  email: site.email,
+  parentOrganization: { '@type': 'Organization', name: brokerage.name },
+  address: { '@type': 'PostalAddress', streetAddress: brokerage.address.line1, addressLocality: brokerage.address.city, addressRegion: brokerage.address.provinceCode, postalCode: brokerage.address.postal, addressCountry: 'CA' },
+  areaServed: ['Calgary', 'Edmonton', 'Alberta'],
+  knowsLanguage: ['en', 'es'],
+  employee: team.map((p) => ({ '@type': 'Person', name: p.name, jobTitle: p.title, url: `${site.url}/about/${p.slug}`, telephone: p.phoneE164, email: p.email })),
+  sameAs: Object.values(site.social),
+};
+const schemas = [orgSchema, ...(schema ? (Array.isArray(schema) ? schema : [schema]) : [])];
+---
+<!doctype html>
+<html lang={lang === 'es' ? 'es-CA' : 'en-CA'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preload" href="/fonts/gigasans-semibold.woff2" as="font" type="font/woff2" crossorigin />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(ogImage, site.url).href} />
+    <meta property="og:locale" content={lang === 'es' ? 'es_CA' : 'en_CA'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="alternate" hreflang="en-CA" href={`${site.url}/`} />
+    <link rel="alternate" hreflang="es-CA" href={`${site.url}/es`} />
+    <meta name="theme-color" content="#F4EFE9" />
+    <script type="application/ld+json" set:html={JSON.stringify(schemas)} />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body class={bodyClass}>
+    <a class="skip" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <MobileBar />
+    <script>
+      // Reveal-on-scroll: sections are visible at rest; JS only adds the entrance.
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      }, { rootMargin: '0px 0px -8% 0px' });
+      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

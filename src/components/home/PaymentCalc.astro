@@ -1,0 +1,136 @@
+---
+import { constants } from '../../data/site';
+---
+<section class="section calc" aria-labelledby="calc-title">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Try the numbers</span>
+      <h2 id="calc-title">What would the payment be?</h2>
+      <p class="lead">Move the sliders. The number updates as you go, including mortgage insurance when the down payment is under 20%.</p>
+    </div>
+    <div class="layout" data-calc="payment">
+      <form class="inputs" onsubmit="return false">
+        <div class="field">
+          <label for="pc-price">Purchase price</label>
+          <div class="range">
+            <input type="range" id="pc-price" name="price" min="150000" max="1500000" step="5000" value="550000" />
+            <input class="input num" id="pc-price-n" inputmode="numeric" value="550,000" aria-label="Purchase price, typed" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="pc-down">Down payment</label>
+          <div class="range">
+            <input type="range" id="pc-down" name="down" min="0" max="500000" step="1000" value="55000" />
+            <input class="input num" id="pc-down-n" inputmode="numeric" value="55,000" aria-label="Down payment, typed" />
+          </div>
+          <span class="help" data-down-help>10% down. Minimum for this price is $27,500.</span>
+        </div>
+        <div class="two">
+          <div class="field">
+            <label for="pc-rate">Interest rate</label>
+            <div class="range">
+              <input type="range" id="pc-rate" name="rate" min="2" max="9" step="0.05" value="4.5" />
+              <input class="input num" id="pc-rate-n" inputmode="decimal" value="4.50" aria-label="Interest rate, typed" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="pc-amort">Amortization</label>
+            <select class="select" id="pc-amort" name="amort"><option value="25">25 years</option><option value="30">30 years</option><option value="20">20 years</option><option value="15">15 years</option></select>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label">Payment frequency</span>
+          <div class="choice">
+            <label><input type="radio" name="freq" value="12" checked /> Monthly</label>
+            <label><input type="radio" name="freq" value="26" /> Bi-weekly</label>
+            <label><input type="radio" name="freq" value="52" /> Weekly</label>
+          </div>
+        </div>
+      </form>
+      <div class="result" aria-live="polite">
+        <span class="eyebrow">Estimated payment</span>
+        <div class="big"><span class="num" data-out="payment">$3,001</span><span class="per" data-out="per">/ month</span></div>
+        <dl>
+          <div><dt>Mortgage amount</dt><dd class="num" data-out="principal">$495,000</dd></div>
+          <div><dt>Mortgage insurance</dt><dd class="num" data-out="premium">$15,345 (3.10%)</dd></div>
+          <div><dt>Total borrowed</dt><dd class="num" data-out="total">$510,345</dd></div>
+          <div><dt>Total interest over the amortization</dt><dd class="num" data-out="interest">$390,000</dd></div>
+        </dl>
+        <p class="warn" data-out="warn" hidden></p>
+        <div class="btn-row">
+          <a class="btn btn-inverse" href="/calculators/payment">Full calculator and email my numbers</a>
+          <a class="btn btn-outline-inverse" href="/start">Check it with us</a>
+        </div>
+        <p class="verified">Estimate only, not an offer of credit. Excludes property tax, insurance and condo fees. Constants verified {constants.verified}.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .calc { background: var(--surface); border-top: var(--hairline); border-bottom: var(--hairline); }
+  .layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: var(--s-6); align-items: start; }
+  .inputs { display: grid; gap: var(--s-5); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+  .result { background: var(--inverse-bg); color: var(--inverse-text); padding: var(--s-6); border-radius: var(--radius); position: sticky; top: calc(var(--header-h) + var(--s-4)); }
+  .result .eyebrow { color: var(--inverse-muted); }
+  .big { display: flex; align-items: baseline; gap: var(--s-2); flex-wrap: wrap; margin-bottom: var(--s-4); }
+  .big .num { font-family: var(--display); font-weight: 600; font-size: clamp(2.2rem, 4vw, 3rem); line-height: 1; }
+  .per { color: var(--inverse-muted); font-size: 1rem; }
+  dl { margin: 0 0 var(--s-4); display: grid; gap: 0; }
+  dl div { display: flex; justify-content: space-between; gap: var(--s-4); padding: 8px 0; border-top: 1px solid var(--inverse-line); font-size: var(--fs-small); }
+  dt { color: var(--inverse-muted); } dd { margin: 0; text-align: right; }
+  .warn { font-size: var(--fs-small); background: rgba(244,239,233,.12); padding: var(--s-3); border-radius: var(--radius); margin-bottom: var(--s-4); }
+  .verified { font-size: .72rem; color: var(--inverse-muted); margin-top: var(--s-4); max-width: none; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .result { position: static; } }
+  @media (max-width: 520px) { .two { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  import { payment, minDownPayment, fmtMoney, type Freq } from '../../lib/mortgage';
+  const root = document.querySelector<HTMLElement>('[data-calc="payment"]')!;
+  const q = <T extends HTMLElement>(s: string) => root.querySelector<T>(s)!;
+  const price = q<HTMLInputElement>('#pc-price'), priceN = q<HTMLInputElement>('#pc-price-n');
+  const down = q<HTMLInputElement>('#pc-down'), downN = q<HTMLInputElement>('#pc-down-n');
+  const rate = q<HTMLInputElement>('#pc-rate'), rateN = q<HTMLInputElement>('#pc-rate-n');
+  const amort = q<HTMLSelectElement>('#pc-amort');
+  const out = (k: string) => q<HTMLElement>(`[data-out="${k}"]`);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const shown: Record<string, number> = {};
+
+  function animateMoney(el: HTMLElement, key: string, to: number, digits = 0) {
+    const from = shown[key] ?? to; shown[key] = to;
+    if (reduce || Math.abs(to - from) < 1) { el.textContent = fmtMoney(to, digits); return; }
+    const t0 = performance.now(), dur = 480;
+    const step = (t: number) => { let k = Math.min(1, (t - t0) / dur); k = 1 - Math.pow(1 - k, 3); el.textContent = fmtMoney(from + (to - from) * k, digits); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+  function parseNum(s: string) { return Number(String(s).replace(/[^0-9.]/g, '')) || 0; }
+
+  function render() {
+    const p = Number(price.value), d = Number(down.value), r = Number(rate.value), a = Number(amort.value);
+    const freq = Number((root.querySelector<HTMLInputElement>('input[name="freq"]:checked')?.value) || 12) as Freq;
+    const res = payment({ price: p, down: d, ratePct: r, amortYears: a, freq });
+    animateMoney(out('payment'), 'payment', res.payment);
+    out('per').textContent = freq === 12 ? '/ month' : freq === 26 ? '/ bi-weekly' : '/ week';
+    animateMoney(out('principal'), 'principal', res.principal);
+    out('premium').textContent = res.premium > 0 ? `${fmtMoney(res.premium)} (${(res.premiumRate * 100).toFixed(2)}%)` : 'None (20% or more down)';
+    animateMoney(out('total'), 'total', res.totalMortgage);
+    animateMoney(out('interest'), 'interest', res.totalInterest);
+    const help = q<HTMLElement>('[data-down-help]');
+    help.textContent = `${(res.downPct * 100).toFixed(1)}% down. Minimum for this price is ${fmtMoney(minDownPayment(p))}.`;
+    const warn = out('warn');
+    if (res.belowMinDown) { warn.textContent = `A down payment of at least ${fmtMoney(res.minDown)} is required at this price. The numbers above assume you reach it.`; warn.hidden = false; }
+    else if (p >= 1_500_000 && res.downPct < 0.2) { warn.textContent = 'Purchases of $1.5 million and above need at least 20% down; mortgage insurance is not available.'; warn.hidden = false; }
+    else warn.hidden = true;
+  }
+  function sync(range: HTMLInputElement, text: HTMLInputElement, digits = 0) {
+    range.addEventListener('input', () => { text.value = digits ? Number(range.value).toFixed(digits) : Number(range.value).toLocaleString('en-CA'); render(); });
+    text.addEventListener('change', () => { const v = parseNum(text.value); range.value = String(Math.min(Number(range.max), Math.max(Number(range.min), v))); text.value = digits ? Number(range.value).toFixed(digits) : Number(range.value).toLocaleString('en-CA'); render(); });
+  }
+  sync(price, priceN); sync(down, downN); sync(rate, rateN, 2);
+  price.addEventListener('input', () => { down.max = String(Number(price.value)); });
+  amort.addEventListener('change', render);
+  root.querySelectorAll('input[name="freq"]').forEach((el) => el.addEventListener('change', render));
+  render();
+</script>

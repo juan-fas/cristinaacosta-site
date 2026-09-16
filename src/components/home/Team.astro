@@ -1,0 +1,21 @@
+---
+import PersonCard from '../PersonCard.astro';
+import { team } from '../../data/site';
+---
+<section class="section team" aria-labelledby="team-title">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">The team</span>
+      <h2 id="team-title">Three Mortgage Associates. One way of working.</h2>
+      <p class="lead">Choose whoever fits your situation or language. You get the same process, the same honesty and the same answers on a Sunday morning.</p>
+    </div>
+    <div class="grid">
+      {team.map((p) => <div class="reveal"><PersonCard person={p} /></div>)}
+    </div>
+  </div>
+</section>
+<style>
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
+  @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; max-width: 420px; } }
+</style>

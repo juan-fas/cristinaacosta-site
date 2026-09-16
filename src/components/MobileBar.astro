@@ -1,0 +1,16 @@
+---
+import Icon from './Icon.astro';
+---
+<nav class="mobile-bar" aria-label="Quick actions">
+  <a href="/contact#call"><Icon name="phone" />Call</a>
+  <a href="/start" class="primary"><Icon name="calendar" />Book</a>
+  <a href="/contact#whatsapp"><Icon name="whatsapp" />WhatsApp</a>
+</nav>
+<style>
+  .mobile-bar { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: var(--surface); border-top: var(--hairline); grid-template-columns: repeat(3, 1fr); padding-bottom: env(safe-area-inset-bottom, 0px); box-shadow: 0 -4px 16px rgba(25, 23, 20, .06); }
+  .mobile-bar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: var(--mobile-bar-h); font-family: var(--display); font-weight: 500; font-size: .72rem; color: var(--text); text-decoration: none; }
+  .mobile-bar a :global(svg) { width: 20px; height: 20px; color: var(--accent); }
+  .mobile-bar a.primary { background: var(--accent); color: var(--on-accent); }
+  .mobile-bar a.primary :global(svg) { color: var(--on-accent); }
+  @media (max-width: 900px) { .mobile-bar { display: grid; } }
+</style>

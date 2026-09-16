@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/home/Hero.astro';
+import ProofStrip from '../components/home/ProofStrip.astro';
+import Path from '../components/home/Path.astro';
+import Situations from '../components/home/Situations.astro';
+import PaymentCalc from '../components/home/PaymentCalc.astro';
+import WhyUs from '../components/home/WhyUs.astro';
+import Team from '../components/home/Team.astro';
+import RenewalCapture from '../components/home/RenewalCapture.astro';
+import LearnPreview from '../components/home/LearnPreview.astro';
+import StartBlock from '../components/StartBlock.astro';
+import { site } from '../data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: site.name,
+  url: site.url,
+  inLanguage: ['en-CA', 'es-CA'],
+};
+---
+<Base
+  title="Mortgage Brokers in Calgary | Cristina Acosta Mortgage Team"
+  description="Three licensed Mortgage Associates in Calgary who explain every step. First-time buyers, newcomers, self-employed, renewals and refinancing, in English and Spanish."
+  schema={schema}
+>
+  <Hero />
+  <ProofStrip />
+  <Path />
+  <Situations />
+  <PaymentCalc />
+  <WhyUs />
+  <Team />
+  <RenewalCapture />
+  <LearnPreview />
+  <StartBlock />
+</Base>

@@ -1,0 +1,67 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { nav } from '../data/site';
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+<header class="site-header" id="top">
+  <div class="container bar">
+    <a href="/" class="brand" aria-label="Cristina Acosta Mortgage Team, home"><Logo /></a>
+    <nav class="primary" aria-label="Primary">
+      <ul>
+        {nav.map((n) => (
+          <li><a href={n.href} lang={n.lang} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <a href="/start" class="btn btn-primary start">Start</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-nav" data-menu>
+      <Icon name="menu" class="open" /><Icon name="close" class="close" /><span class="sr-only">Menu</span>
+    </button>
+  </div>
+  <nav class="mobile" id="mobile-nav" aria-label="Primary, mobile" hidden>
+    <ul>
+      {nav.map((n) => <li><a href={n.href} lang={n.lang}>{n.label}</a></li>)}
+      <li><a href="/contact">Contact</a></li>
+      <li class="cta"><a href="/start" class="btn btn-primary">Start a conversation</a></li>
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: var(--hairline); transition: box-shadow var(--dur) var(--ease); }
+  .site-header.scrolled { box-shadow: var(--shadow-sticky); }
+  .bar { height: var(--header-h); display: flex; align-items: center; gap: var(--s-6); }
+  .brand { width: 150px; flex: none; }
+  .primary { margin-left: auto; }
+  .primary ul { list-style: none; display: flex; gap: var(--s-5); margin: 0; padding: 0; }
+  .primary a { font-family: var(--display); font-weight: 500; font-size: .92rem; color: var(--text); text-decoration: none; padding: 6px 0; border-bottom: 1.5px solid transparent; transition: color var(--dur-fast), border-color var(--dur-fast); }
+  .primary a:hover, .primary a[aria-current="page"] { color: var(--accent); border-bottom-color: var(--accent); }
+  .menu-btn { display: none; background: none; border: 0; padding: 8px; margin-left: auto; color: var(--text); min-width: 44px; min-height: 44px; align-items: center; justify-content: center; }
+  .menu-btn .close { display: none; }
+  .menu-btn[aria-expanded="true"] .open { display: none; }
+  .menu-btn[aria-expanded="true"] .close { display: block; }
+  .mobile { display: none; border-top: var(--hairline); background: var(--bg); }
+  .mobile ul { list-style: none; margin: 0; padding: var(--s-3) var(--gutter) var(--s-5); }
+  .mobile li a:not(.btn) { display: block; padding: 14px 0; font-family: var(--display); font-weight: 500; font-size: 1.1rem; color: var(--text); text-decoration: none; border-bottom: var(--hairline); }
+  .mobile .cta { padding-top: var(--s-4); }
+  @media (max-width: 900px) {
+    .primary, .start { display: none; }
+    .menu-btn { display: inline-flex; }
+    .mobile:not([hidden]) { display: block; }
+  }
+</style>
+
+<script>
+  const header = document.querySelector('.site-header');
+  const btn = document.querySelector<HTMLButtonElement>('[data-menu]');
+  const mobile = document.getElementById('mobile-nav');
+  btn?.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    if (mobile) mobile.hidden = open;
+  });
+  const onScroll = () => header?.classList.toggle('scrolled', window.scrollY > 8);
+  onScroll();
+  addEventListener('scroll', onScroll, { passive: true });
+</script>

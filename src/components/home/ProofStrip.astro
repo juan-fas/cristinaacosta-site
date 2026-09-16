@@ -1,0 +1,24 @@
+---
+import { brokerage, site } from '../../data/site';
+const items = [
+  { k: 'Three licensed', v: 'Mortgage Associates, licensed by RECA' },
+  { k: brokerage.name, v: brokerage.affiliation },
+  { k: 'English and Español', v: 'Meetings, documents and calls in your language' },
+  { k: 'Evenings and weekends', v: `${site.hours[0].hours} weekdays, ${site.hours[1].hours} weekends` },
+];
+---
+<section class="proof" aria-label="Who we are">
+  <div class="container">
+    <ul>
+      {items.map((i) => <li><strong>{i.k}</strong><span>{i.v}</span></li>)}
+    </ul>
+  </div>
+</section>
+<style>
+  .proof { border-top: var(--hairline); border-bottom: var(--hairline); background: var(--surface); }
+  ul { list-style: none; margin: 0; padding: var(--s-5) 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-5); }
+  li { display: grid; gap: 2px; font-size: var(--fs-small); color: var(--text-muted); padding-left: var(--s-4); border-left: 2px solid var(--beige-500); }
+  strong { font-family: var(--display); font-weight: 500; font-size: 1rem; color: var(--text); }
+  @media (max-width: 900px) { ul { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { ul { grid-template-columns: 1fr; } }
+</style>

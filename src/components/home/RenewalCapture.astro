@@ -1,0 +1,50 @@
+---
+import { team } from '../../data/site';
+const now = new Date();
+const months = Array.from({ length: 24 }, (_, i) => { const d = new Date(now.getFullYear(), now.getMonth() + i, 1); return d.toLocaleString('en-CA', { month: 'long', year: 'numeric' }); });
+---
+<section class="section renew inverse" aria-labelledby="renew-title">
+  <div class="container grid">
+    <div>
+      <span class="eyebrow">Renew smarter</span>
+      <h2 id="renew-title">When does your mortgage renew?</h2>
+      <p class="lead">Tell us the month. Ninety days before it, we check what your lender offers against the whole market and send you the comparison. No obligation, no forms until then.</p>
+    </div>
+    <form class="form" name="renewal-date" method="POST" action="/thanks?for=renewal" data-netlify="true" netlify-honeypot="company">
+      <input type="hidden" name="form-name" value="renewal-date" />
+      <p class="hp"><label>Leave this empty <input name="company" tabindex="-1" autocomplete="off" /></label></p>
+      <div class="field">
+        <label for="rn-month">Renewal month</label>
+        <select class="select" id="rn-month" name="renewal_month" required>{months.map((m) => <option>{m}</option>)}</select>
+      </div>
+      <div class="field">
+        <label for="rn-name">Your name</label>
+        <input class="input" id="rn-name" name="name" required autocomplete="name" />
+      </div>
+      <div class="field">
+        <label for="rn-contact">Email or mobile</label>
+        <input class="input" id="rn-contact" name="contact" required autocomplete="email" inputmode="email" />
+      </div>
+      <div class="field">
+        <span class="label">Who should follow up?</span>
+        <div class="choice">
+          {team.map((p, i) => <label><input type="radio" name="associate" value={p.first} checked={i === 0} /> {p.first}</label>)}
+          <label><input type="radio" name="associate" value="Anyone" /> Anyone</label>
+        </div>
+      </div>
+      <label class="consent"><input type="checkbox" name="consent" value="yes" required /><span>I consent to receiving communications from Enrich Mortgage Group, affiliated companies and authorized agents. You can withdraw your consent at any time by unsubscribing. <a href="/privacy">Privacy</a></span></label>
+      <button class="btn btn-inverse btn-lg" type="submit">Remind me before my renewal</button>
+    </form>
+  </div>
+</section>
+<style>
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-8); align-items: start; }
+  .form { display: grid; gap: var(--s-4); background: var(--inverse-bg-deep); padding: var(--s-6); border-radius: var(--radius); }
+  .form :global(.input), .form :global(.select) { background: var(--cream); color: var(--ink); border-color: transparent; }
+  .form :global(.choice label) { background: transparent; color: var(--inverse-text); border-color: var(--inverse-line); }
+  .form :global(.choice label:has(input:checked)) { background: rgba(244,239,233,.14); border-color: var(--inverse-text); }
+  .form :global(.consent) { color: var(--inverse-muted); }
+  .form :global(.consent a) { color: var(--inverse-text); }
+  .form :global(.field label), .form :global(.field .label) { color: var(--inverse-text); }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; gap: var(--s-6); } }
+</style>

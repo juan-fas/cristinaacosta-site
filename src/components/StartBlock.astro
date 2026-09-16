@@ -1,0 +1,41 @@
+---
+import Icon from './Icon.astro';
+import { team, whatsapp } from '../data/site';
+interface Props { title?: string; lead?: string }
+const { title = 'Ready when you are.', lead = 'Choose who you would like to talk to, then how. A first conversation costs nothing and commits you to nothing.' } = Astro.props;
+---
+<section class="section start" aria-labelledby="start-title">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Start</span>
+      <h2 id="start-title">{title}</h2>
+      <p class="lead">{lead}</p>
+    </div>
+    <div class="grid">
+      {team.map((p) => (
+        <div class="who">
+          <h3>{p.first}</h3>
+          <p class="focus">{p.focus}</p>
+          <p class="lang">{p.languages.join(' · ')}</p>
+          <div class="ch">
+            {p.booking ? <a class="btn btn-primary" href={p.booking} target="_blank" rel="noopener"><Icon name="calendar" />Book a conversation</a> : <a class="btn btn-primary" href={`tel:${p.phoneE164}`}><Icon name="phone" />Call {p.phone}</a>}
+            <a class="btn btn-wa" href={whatsapp(p, `Hi ${p.first}, I found you on cristinaacosta.ca and have a mortgage question.`)} target="_blank" rel="noopener"><Icon name="whatsapp" />WhatsApp</a>
+            <a class="btn btn-secondary" href={p.apply} target="_blank" rel="noopener"><Icon name="docs" />Apply online</a>
+          </div>
+        </div>
+      ))}
+    </div>
+    <p class="es"><a href="/es" lang="es">¿Prefieres hablar en español? Hablemos.</a></p>
+  </div>
+</section>
+<style>
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); }
+  .who { background: var(--surface); border: var(--hairline); padding: var(--s-5); border-radius: var(--radius); display: grid; gap: var(--s-2); align-content: start; }
+  h3 { font-size: 1.4rem; font-weight: 600; }
+  .focus { font-size: var(--fs-small); color: var(--text-muted); }
+  .lang { font-family: var(--display); font-weight: 500; font-size: .78rem; color: var(--beige-700); letter-spacing: .06em; }
+  .ch { display: grid; gap: var(--s-2); margin-top: var(--s-3); }
+  .ch .btn { justify-content: flex-start; }
+  .es { margin-top: var(--s-6); font-family: var(--display); font-weight: 500; font-size: 1.05rem; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+</style>

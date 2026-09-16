@@ -1,0 +1,72 @@
+---
+import { Picture } from 'astro:assets';
+import teamPhoto from '../../assets/photos/team-grey.jpg';
+import { situations } from '../../data/site';
+const chooser = situations.filter((s) => s.key !== 'commercial');
+---
+<section class="hero" aria-labelledby="hero-title">
+  <div class="container grid">
+    <div class="copy">
+      <span class="eyebrow">Mortgage Associates in Calgary · English and Español</span>
+      <h1 id="hero-title" class="display">Mortgages, explained.<br /><span class="soft">Every step.</span></h1>
+      <p class="lead">Three licensed Mortgage Associates who plan the mortgage around your life, then walk you through every document, condition and decision until the keys are in your hand.</p>
+
+      <div class="chooser" role="group" aria-labelledby="chooser-label">
+        <span id="chooser-label" class="label">Which step are you on?</span>
+        <div class="options">
+          {chooser.map((s, i) => (
+            <button type="button" data-path={s.key} aria-pressed={i === 0 ? 'true' : 'false'}>{s.label}</button>
+          ))}
+        </div>
+      </div>
+
+      <div class="btn-row actions">
+        <a class="btn btn-primary btn-lg" href="/start?for=first" data-start-cta>Book a conversation</a>
+        <a class="btn btn-quiet" href="/mortgages/first-time-buyers" data-situation-link>See the steps for first-time buyers</a>
+      </div>
+    </div>
+    <div class="photo reveal">
+      <Picture src={teamPhoto} formats={['avif', 'webp']} widths={[480, 720, 960]} sizes="(max-width: 900px) 92vw, 44vw" alt="Cristina Acosta, Juan Acosta and Sheryl Beaver, the Cristina Acosta Mortgage Team, standing together" loading="eager" fetchpriority="high" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero { padding-block: clamp(var(--s-6), 6vw, var(--s-9)) clamp(var(--s-6), 5vw, var(--s-8)); }
+  .grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(var(--s-6), 5vw, var(--s-9)); align-items: center; }
+  .copy { display: grid; gap: var(--s-5); }
+  .soft { color: var(--beige-700); }
+  .chooser { display: grid; gap: var(--s-3); }
+  .label { font-family: var(--display); font-weight: 500; font-size: 1rem; }
+  .options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); }
+  .options button { font-family: var(--display); font-weight: 500; font-size: .92rem; text-align: left; padding: 12px 14px; min-height: 48px; background: var(--surface); border: 1.5px solid var(--line-strong); color: var(--text); border-radius: var(--radius); transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease); }
+  .options button:hover { border-color: var(--accent); }
+  .options button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+  .photo :global(img) { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; object-position: center top; border-radius: var(--radius-lg); background: var(--surface-2); }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; }
+    .photo { order: -1; max-width: 420px; }
+    .photo :global(img) { aspect-ratio: 4 / 5; }
+  }
+  @media (max-width: 480px) { .options { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  import { situationStore } from '../../lib/situation';
+  const labels: Record<string, string> = {
+    first: 'first-time buyers', new: 'newcomers to Canada', self: 'self-employed buyers', renew: 'renewals', refi: 'using your equity', invest: 'investment properties',
+  };
+  const slugs: Record<string, string> = {
+    first: 'first-time-buyers', new: 'new-to-canada', self: 'self-employed', renew: 'renewal', refi: 'refinance', invest: 'investment-properties',
+  };
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-path]');
+  const cta = document.querySelector<HTMLAnchorElement>('[data-start-cta]');
+  const link = document.querySelector<HTMLAnchorElement>('[data-situation-link]');
+  function render(key: string) {
+    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.path === key)));
+    if (cta) cta.href = `/start?for=${key}`;
+    if (link) { link.href = `/mortgages/${slugs[key] ?? 'first-time-buyers'}`; link.textContent = `See the steps for ${labels[key] ?? 'your situation'}`; }
+  }
+  buttons.forEach((b) => b.addEventListener('click', () => situationStore.set(b.dataset.path!)));
+  situationStore.subscribe(render);
+</script>

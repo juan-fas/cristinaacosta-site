@@ -1,0 +1,41 @@
+---
+import Icon from '../Icon.astro';
+import { situations } from '../../data/site';
+---
+<section class="section situations" aria-labelledby="sit-title">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Mortgages by situation</span>
+      <h2 id="sit-title">Start from your situation, not from a product name.</h2>
+      <p class="lead">Every mortgage we arrange starts with one of these. If yours is not here, it is in the full list, from bridge financing to spousal buyouts.</p>
+    </div>
+    <div class="grid">
+      {situations.map((s) => (
+        <a class="card reveal" href={`/mortgages/${s.slug}`} data-situation-card={s.key}>
+          <Icon name={s.icon} class="ico" size={28} />
+          <h3>{s.short}</h3>
+          <p>{s.blurb}</p>
+          <span class="go">See the steps</span>
+        </a>
+      ))}
+      <a class="card all reveal" href="/mortgages#every-situation">
+        <h3>Every other situation</h3>
+        <p>Bridge, purchase plus improvements, spousal buyout, reverse, construction, rural, non-resident, switch, second opinion and more.</p>
+        <span class="go">See the full list</span>
+      </a>
+    </div>
+  </div>
+</section>
+<style>
+  .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-4); }
+  .card h3 { font-size: 1.15rem; font-weight: 600; margin-top: var(--s-1); }
+  .card.all { background: var(--surface-2); border-style: dashed; }
+  :global(html[data-situation="first"]) .card[data-situation-card="first"],
+  :global(html[data-situation="new"]) .card[data-situation-card="new"],
+  :global(html[data-situation="self"]) .card[data-situation-card="self"],
+  :global(html[data-situation="renew"]) .card[data-situation-card="renew"],
+  :global(html[data-situation="refi"]) .card[data-situation-card="refi"],
+  :global(html[data-situation="invest"]) .card[data-situation-card="invest"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  @media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+</style>
