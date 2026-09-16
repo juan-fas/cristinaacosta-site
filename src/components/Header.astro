@@ -6,7 +6,10 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 <header class="site-header" id="top">
   <div class="container bar">
-    <a href="/" class="brand" aria-label="Cristina Acosta Mortgage Team, home"><Logo /></a>
+    <a href="/" class="brand" aria-label="Cristina Acosta Mortgage Team, home">
+      <Logo variant="mark" title="" />
+      <span class="wordmark" aria-hidden="true"><span class="n">Cristina Acosta</span><span class="t">Mortgage Team</span></span>
+    </a>
     <nav class="primary" aria-label="Primary">
       <ul>
         {nav.map((n) => (
@@ -32,16 +35,19 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
   .site-header { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: var(--hairline); transition: box-shadow var(--dur) var(--ease); }
   .site-header.scrolled { box-shadow: var(--shadow-sticky); }
   .bar { height: var(--header-h); display: flex; align-items: center; gap: var(--s-6); }
-  .brand { flex: none; height: 52px; display: block; }
-  .brand :global(.logo), .brand :global(svg) { height: 52px; width: auto; }
+  .brand { flex: none; display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .brand :global(.logo), .brand :global(svg) { height: 44px; width: auto; }
+  .wordmark { display: grid; line-height: 1.05; }
+  .wordmark .n { font-family: var(--display); font-weight: 600; font-size: 1.02rem; color: var(--blue-700); letter-spacing: -.005em; }
+  .wordmark .t { font-family: var(--display); font-weight: 500; font-size: .62rem; letter-spacing: .2em; text-transform: uppercase; color: var(--beige-700); margin-top: 2px; }
   .primary { margin-left: auto; }
   .primary ul { list-style: none; display: flex; gap: var(--s-5); margin: 0; padding: 0; }
   .primary a { font-family: var(--display); font-weight: 500; font-size: .92rem; color: var(--text); text-decoration: none; padding: 6px 0; border-bottom: 1.5px solid transparent; transition: color var(--dur-fast), border-color var(--dur-fast); }
   .primary a:hover, .primary a[aria-current="page"] { color: var(--accent); border-bottom-color: var(--accent); }
   .menu-btn { display: none; background: none; border: 0; padding: 8px; margin-left: auto; color: var(--text); min-width: 44px; min-height: 44px; align-items: center; justify-content: center; }
-  .menu-btn .close { display: none; }
-  .menu-btn[aria-expanded="true"] .open { display: none; }
-  .menu-btn[aria-expanded="true"] .close { display: block; }
+  .menu-btn :global(.close) { display: none; }
+  .menu-btn[aria-expanded="true"] :global(.open) { display: none; }
+  .menu-btn[aria-expanded="true"] :global(.close) { display: block; }
   .mobile { display: none; border-top: var(--hairline); background: var(--bg); }
   .mobile ul { list-style: none; margin: 0; padding: var(--s-3) var(--gutter) var(--s-5); }
   .mobile li a:not(.btn) { display: block; padding: 14px 0; font-family: var(--display); font-weight: 500; font-size: 1.1rem; color: var(--text); text-decoration: none; border-bottom: var(--hairline); }

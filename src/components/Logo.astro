@@ -1,9 +1,17 @@
 ---
-/* Vector logotype from the brand's Illustrator file, recoloured to manual hex values via CSS. */
+/* Vector logotype from the brand's Illustrator file, recoloured to manual hex values via CSS.
+   variant="full" is the complete logotype; variant="mark" is the standalone isotype "CA+",
+   which the brand manual permits for small spaces such as headers and favicons. */
 import logo from '../assets/logo.svg?raw';
-interface Props { class?: string; inverse?: boolean; title?: string }
-const { class: cls = '', inverse = false, title = 'Cristina Acosta Mortgage Team' } = Astro.props;
-const svg = logo.replace('aria-label="Cristina Acosta Mortgage Team"', `aria-label="${title}"`);
+interface Props { class?: string; inverse?: boolean; title?: string; variant?: 'full' | 'mark' }
+const { class: cls = '', inverse = false, title = 'Cristina Acosta Mortgage Team', variant = 'full' } = Astro.props;
+let svg = logo.replace('aria-label="Cristina Acosta Mortgage Team"', `aria-label="${title}"`);
+if (variant === 'mark') {
+  // The isotype is the four paths whose origin sits above y=350 in the artwork's coordinate space.
+  svg = svg
+    .replace(/<path transform="matrix\(1,0,0,-1,([-\d.]+),([-\d.]+)\)"[^>]*\/>/g, (m, _x, y) => (Number(y) < 350 ? m : ''))
+    .replace('viewBox="80 206 460 250"', 'viewBox="227 206 167 153"');
+}
 ---
 <span class:list={['logo', cls, { inverse }]} set:html={svg} />
 <style is:global>
