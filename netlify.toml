@@ -23,3 +23,22 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Alias domains send visitors to the primary domain so search engines see one site.
+[[redirects]]
+  from = "https://cristinaacostamortgageteam.ca/*"
+  to = "https://cristinaacosta.ca/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://juanacosta.ca/*"
+  to = "https://cristinaacosta.ca/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://cristinamortgage.ca/*"
+  to = "https://cristinaacosta.ca/:splat"
+  status = 301
+  force = true
