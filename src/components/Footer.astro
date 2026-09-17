@@ -2,7 +2,8 @@
 import Icon from './Icon.astro';
 import { site, brokerage, team } from '../data/site';
 const year = new Date().getFullYear();
-const licences = team.map((p) => `${p.name} (${p.licence})`).join(', ');
+const names = team.map((p) => p.name);
+const licensees = `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
 ---
 <footer class="site-footer inverse">
   <div class="container">
@@ -40,7 +41,7 @@ const licences = team.map((p) => `${p.name} (${p.licence})`).join(', ');
       </div>
     </div>
     <p class="legal">
-      {licences} are Mortgage Associates licensed by the {brokerage.regulator}, dealing in mortgages in the name of {brokerage.name}.
+      {licensees} are Mortgage Associates licensed by the {brokerage.regulator}, dealing in mortgages in the name of {brokerage.name}. Licence status can be verified on <a href={brokerage.procheckUrl} target="_blank" rel="noopener">RECA ProCheck</a>.
       Information on this site is general in nature and is not an offer, commitment or approval of credit. All applications are subject to lender approval, credit review and lending guidelines. Rates and products change without notice.
       © {year} Cristina Acosta Mortgage Team.
     </p>

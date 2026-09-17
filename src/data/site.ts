@@ -29,6 +29,7 @@ export const brokerage = {
   regulator: 'Real Estate Council of Alberta',
   regulatorShort: 'RECA',
   regulatorUrl: 'https://www.reca.ca/',
+  procheckUrl: 'https://procheck.reca.ca/',   // RECA's public licence search
   address: {
     line1: '150, 550 71 Avenue SE',
     city: 'Calgary',

@@ -17,7 +17,7 @@ import { team, whatsapp, brokerage, site, situations } from '../data/site';
       {team.map((p) => (
         <div class="card-c">
           <h2>{p.name}</h2>
-          <p class="small">{p.title} · Licence {p.licence} · {p.languages.join(', ')}</p>
+          <p class="small">{p.title} · {p.languages.join(', ')}</p>
           <ul>
             <li><Icon name="phone" size={20} /><a href={`tel:${p.phoneE164}`}>{p.phone}</a></li>
             <li id={p.slug === 'juan-acosta' ? 'whatsapp' : undefined}><Icon name="whatsapp" size={20} /><a href={whatsapp(p)} target="_blank" rel="noopener">WhatsApp {p.first}</a></li>

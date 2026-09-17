@@ -9,8 +9,8 @@ import { team, brokerage, site, constants } from '../data/site';
       <h1>Who we are, how we are paid, and what this site is not.</h1>
 
       <h2>Licensing and brokerage</h2>
-      <p>{team.map((p) => `${p.name} (licence ${p.licence})`).join(', ')} are Mortgage Associates licensed by the {brokerage.regulator} ({brokerage.regulatorShort}). We deal in mortgages in the name of <strong>{brokerage.name}</strong>, an independently owned and operated network member of Mortgage Alliance. Cristina Acosta Mortgage Team is a team name within the brokerage, not a brokerage itself.</p>
-      <p>Licences can be verified on the <a href={brokerage.regulatorUrl} target="_blank" rel="noopener">RECA website</a>. Office: {brokerage.address.line1}, {brokerage.address.city}, {brokerage.address.province} {brokerage.address.postal}.</p>
+      <p>{team.map((p) => p.name).join(', ')} are Mortgage Associates licensed by the {brokerage.regulator} ({brokerage.regulatorShort}). We deal in mortgages in the name of <strong>{brokerage.name}</strong>, an independently owned and operated network member of Mortgage Alliance. Cristina Acosta Mortgage Team is a team name within the brokerage, not a brokerage itself.</p>
+      <p>The licence status of any Alberta mortgage professional can be verified free of charge on <a href={brokerage.procheckUrl} target="_blank" rel="noopener">RECA ProCheck</a>, the regulator's public search. Search by name. Office: {brokerage.address.line1}, {brokerage.address.city}, {brokerage.address.province} {brokerage.address.postal}.</p>
 
       <h2>Not an offer of credit</h2>
       <p>Information on this site, including calculator results, is general in nature and does not constitute an offer, commitment or approval of credit. All applications are subject to lender approval, credit review, income and property verification, and applicable lending guidelines.</p>

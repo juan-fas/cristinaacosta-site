@@ -65,7 +65,7 @@ const situaciones = [
         {es.map((p) => (
           <div class="who">
             <h3>{p.first} {p.name.split(' ')[1]}</h3>
-            <p class="small">{p.title} · Licencia {p.licence} · Español e inglés</p>
+            <p class="small">{p.title} · Español e inglés</p>
             <div class="ch">
               <a class="btn btn-wa" href={whatsapp(p, `Hola ${p.first}, te encontré en cristinaacosta.ca y tengo una pregunta sobre hipotecas.`)} target="_blank" rel="noopener"><Icon name="whatsapp" />WhatsApp</a>
               {p.booking && <a class="btn btn-primary" href={p.booking} target="_blank" rel="noopener"><Icon name="calendar" />Agendar llamada</a>}
@@ -88,7 +88,7 @@ const situaciones = [
     </form>
   </div></section>
 
-  <section class="section-tight legal-es"><div class="container"><p class="small">Cristina Acosta, Juan Acosta y Sheryl Beaver son Mortgage Associates con licencia del Real Estate Council of Alberta, y operan en nombre de {brokerage.name}, miembro independiente de la red Mortgage Alliance. La información de este sitio es general y no constituye una oferta de crédito. Las páginas legales en inglés, <a href="/disclosures">Disclosures</a> y <a href="/privacy">Privacy</a>, son las que rigen.</p></div></section>
+  <section class="section-tight legal-es"><div class="container"><p class="small">Cristina Acosta, Juan Acosta y Sheryl Beaver son Mortgage Associates con licencia del Real Estate Council of Alberta (verificable en <a href={brokerage.procheckUrl} target="_blank" rel="noopener">RECA ProCheck</a>), y operan en nombre de {brokerage.name}, miembro independiente de la red Mortgage Alliance. La información de este sitio es general y no constituye una oferta de crédito. Las páginas legales en inglés, <a href="/disclosures">Disclosures</a> y <a href="/privacy">Privacy</a>, son las que rigen.</p></div></section>
 </Base>
 <style>
   .hero { padding-block: clamp(var(--s-6), 6vw, var(--s-9)) clamp(var(--s-6), 5vw, var(--s-8)); }

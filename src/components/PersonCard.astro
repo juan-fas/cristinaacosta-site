@@ -21,7 +21,7 @@ const alt = `${p.name}, Mortgage Associate`;
   </a>
   <div class="body">
     <h3><a href={`/about/${p.slug}`}>{p.name}</a></h3>
-    <p class="role">{p.title} · Licence {p.licence} · {p.languages.join(', ')}</p>
+    <p class="role">{p.title} · {p.languages.join(', ')}</p>
     {!compact && <p class="focus">{p.focus}</p>}
     <div class="ch">
       {p.booking ? <a class="btn btn-primary btn-sm" href={p.booking} target="_blank" rel="noopener">Book</a> : <a class="btn btn-primary btn-sm" href={`tel:${p.phoneE164}`}>Call</a>}

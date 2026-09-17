@@ -19,7 +19,7 @@ const schema = {
   '@context': 'https://schema.org', '@type': 'Person', '@id': `${site.url}/about/${p.slug}#person`,
   name: p.name, jobTitle: p.title, telephone: p.phoneE164, email: p.email, url: `${site.url}/about/${p.slug}`,
   worksFor: { '@type': 'Organization', name: brokerage.name }, knowsLanguage: p.languages,
-  hasCredential: { '@type': 'EducationalOccupationalCredential', name: `Mortgage Associate licence ${p.licence}`, recognizedBy: { '@type': 'Organization', name: brokerage.regulator } },
+  hasCredential: { '@type': 'EducationalOccupationalCredential', name: 'Mortgage Associate licence, Alberta', recognizedBy: { '@type': 'Organization', name: brokerage.regulator } },
 };
 ---
 <Base title={`${p.name}, Mortgage Associate in Calgary`} description={`${p.name} is a licensed Mortgage Associate with ${brokerage.name} in Calgary. ${p.focus} ${p.languages.join(' and ')}.`} schema={schema}>
@@ -30,7 +30,7 @@ const schema = {
         <div class="photo"><Picture src={photo} formats={['avif', 'webp']} widths={[480, 720, 960]} sizes="(max-width: 800px) 92vw, 40vw" alt={`${p.name}, Mortgage Associate`} loading="eager" /></div>
         <div class="intro">
           <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/about">Team</a><span aria-hidden="true">/</span><span aria-current="page">{p.first}</span></nav>
-          <span class="eyebrow">{p.title} · Licence {p.licence}</span>
+          <span class="eyebrow">{p.title} · Licensed in Alberta</span>
           <h1>{p.name}</h1>
           <p class="lead">{bio.headline}</p>
           <dl class="facts">
@@ -59,7 +59,7 @@ const schema = {
           <span class="eyebrow">Who I help most</span>
           <ul class="checks">{bio.helps.map((h) => <li><Icon name="check" size={20} /><span>{h}</span></li>)}</ul>
           {bio.languagesNote && <p class="small" style="margin-top:var(--s-4)">{bio.languagesNote}</p>}
-          <p class="small" style="margin-top:var(--s-4)">Licence {p.licence}, verifiable on the <a href={brokerage.regulatorUrl} rel="noopener" target="_blank">RECA website</a>.</p>
+          <p class="small" style="margin-top:var(--s-4)">Licensed by the {brokerage.regulator}. Licence status can be verified on <a href={brokerage.procheckUrl} rel="noopener" target="_blank">RECA ProCheck</a>.</p>
         </div>
       </div>
     </section>
