@@ -1,6 +1,6 @@
 ---
 title: "Will a mortgage application hurt my credit?"
-description: "How mortgage credit checks work in Canada, why one check through a broker is shared across lenders, and what actually damages a credit score while you are house hunting."
+description: "How mortgage credit checks work in Canada, why one broker pull covers multiple lenders, and what actually hurts your score while house hunting."
 stage: "Before you buy"
 author: "sheryl-beaver"
 published: 2026-09-16

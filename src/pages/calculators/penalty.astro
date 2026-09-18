@@ -1,8 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
 import CalcShell from '../../components/calc/CalcShell.astro';
+import { breadcrumbs } from '../../lib/schema';
+const crumbs = breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Calculators', path: '/calculators' }, { name: 'Penalty Estimator', path: '/calculators/penalty' }]);
 ---
-<Base title="Mortgage Penalty Estimator" description="Estimate the penalty to break a Canadian mortgage: three months' interest for variable, the greater of three months' interest and the interest rate differential for fixed, and why every lender's number is different.">
+<Base title="Mortgage Penalty Estimator" description="Estimate the penalty to break a mortgage: three months interest for variable, or the rate differential for fixed, and why lenders differ." schema={crumbs} brand={false}>
   <CalcShell tool="penalty" eyebrow="Penalty to break my mortgage" title="What would it cost to break the mortgage early?" lead="Variable mortgages usually charge three months of interest. Fixed mortgages charge the greater of that and the interest rate differential, and every lender calculates the differential its own way, which is why the range below can be wide. Ask your lender for a written quote; we check it." resultLabel="Estimated penalty" disclaimer="Estimate only. Your lender's formula, posted rates and discounts decide the real number.">
     <Fragment slot="inputs">
       <div class="field"><label for="pe-bal">Current balance</label><div class="range"><input type="range" id="pe-bal" min="50000" max="1500000" step="5000" value="360000" /><input class="input num" id="pe-bal-n" inputmode="numeric" aria-label="Balance, typed" /></div></div>

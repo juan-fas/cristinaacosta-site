@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
 import { team, whatsapp, brokerage, site } from '../../data/site';
 import { bios } from '../../data/people';
+import { breadcrumbs } from '../../lib/schema';
 import cristina from '../../assets/photos/cristina-2.jpg';
 import juan from '../../assets/photos/juan-2.jpg';
 import sheryl from '../../assets/photos/sheryl-2.jpg';
@@ -21,8 +22,9 @@ const schema = {
   worksFor: { '@type': 'Organization', name: brokerage.name }, knowsLanguage: p.languages,
   hasCredential: { '@type': 'EducationalOccupationalCredential', name: 'Mortgage Associate licence, Alberta', recognizedBy: { '@type': 'Organization', name: brokerage.regulator } },
 };
+const crumbs = breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Team', path: '/about' }, { name: p.first, path: `/about/${p.slug}` }]);
 ---
-<Base title={`${p.name}, Mortgage Associate in Calgary`} description={`${p.name} is a licensed Mortgage Associate with ${brokerage.name} in Calgary. ${p.focus} ${p.languages.join(' and ')}.`} schema={schema}>
+<Base title={`${p.name}, Mortgage Associate in Calgary`} description={`${p.name}, Mortgage Associate in Calgary. ${p.focus}`} schema={[schema, crumbs]} brand={false}>
   <!-- NEEDS CLIENT APPROVAL: bio text for {p.name} -->
   <article class="person-page">
     <header class="head">

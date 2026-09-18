@@ -2,8 +2,10 @@
 import Base from '../../layouts/Base.astro';
 import CalcShell from '../../components/calc/CalcShell.astro';
 import { constants } from '../../data/site';
+import { breadcrumbs } from '../../lib/schema';
+const crumbs = breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Calculators', path: '/calculators' }, { name: 'Affordability and Stress Test', path: '/calculators/affordability' }]);
 ---
-<Base title="Mortgage Affordability and Stress Test Calculator (Alberta)" description="How much can you afford in Alberta? Maximum purchase price from income, debts and down payment, qualified at the stress-test rate, with the GDS and TDS limits explained.">
+<Base title="Mortgage Affordability and Stress Test Calculator (Alberta)" description="How much can you afford in Alberta? Maximum price from income and savings, qualified at the stress-test rate, with GDS and TDS explained." schema={crumbs} brand={false}>
   <CalcShell tool="affordability" eyebrow="Affordability and stress test" title="How much can I afford?" lead="Lenders test you at the higher of your rate plus 2% or 5.25%, and cap your housing costs at 39% of income and all debts at 44%. This tool applies both and tells you which one is holding the number." resultLabel="Estimated maximum purchase price" disclaimer="Estimate only, not an offer of credit. Lender policies and property type can change the result.">
     <Fragment slot="inputs">
       <div class="field"><label for="a-income">Household income before tax, per year</label><div class="range"><input type="range" id="a-income" min="30000" max="400000" step="1000" value="110000" /><input class="input num" id="a-income-n" inputmode="numeric" aria-label="Income, typed" /></div></div>

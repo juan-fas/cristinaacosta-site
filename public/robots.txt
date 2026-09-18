@@ -1,6 +1,5 @@
 User-agent: *
 Allow: /
 Disallow: /thanks
-Disallow: /reviews
 
 Sitemap: https://cristinaacosta.ca/sitemap-index.xml

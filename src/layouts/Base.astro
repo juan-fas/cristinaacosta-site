@@ -16,10 +16,17 @@ interface Props {
   noindex?: boolean;
   schema?: Record<string, unknown> | Record<string, unknown>[];
   bodyClass?: string;
+  /** Set false on long-tail pages (calculators, guides, situation and person pages) so the
+   * title tag stays under ~60 characters instead of always carrying the full brand name. */
+  brand?: boolean;
 }
-const { title, description, lang = 'en', ogImage = '/og/default.png', noindex = false, schema, bodyClass = '' } = Astro.props;
+const { title, description, lang = 'en', ogImage = '/og/default.png', noindex = false, schema, bodyClass = '', brand = true } = Astro.props;
 const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', site.url).href;
-const fullTitle = title.includes('Cristina Acosta') ? title : `${title} | Cristina Acosta Mortgage Team`;
+const canonicalPath = canonical.replace(site.url, '') || '/';
+const fullTitle = title.includes('Cristina Acosta') ? title : brand ? `${title} | Cristina Acosta Mortgage Team` : title;
+// Reciprocal hreflang only exists for the home page and its true Spanish counterpart /es.
+// Every other page has no translated twin yet, so it carries no hreflang at all rather than a false one.
+const isTranslatedPair = canonicalPath === '/' || canonicalPath === '/es';
 
 const orgSchema = {
   '@context': 'https://schema.org',
@@ -28,10 +35,17 @@ const orgSchema = {
   name: site.name,
   url: site.url,
   email: site.email,
+  image: `${site.url}/og/default.png`,
+  logo: `${site.url}/apple-touch-icon.png`,
   parentOrganization: { '@type': 'Organization', name: brokerage.name },
   address: { '@type': 'PostalAddress', streetAddress: brokerage.address.line1, addressLocality: brokerage.address.city, addressRegion: brokerage.address.provinceCode, postalCode: brokerage.address.postal, addressCountry: 'CA' },
-  areaServed: ['Calgary', 'Edmonton', 'Alberta'],
+  hasMap: brokerage.address.mapsUrl,
+  // Calgary is where the team practises today; Edmonton is a stated goal, not yet backed by
+  // any Edmonton-specific content, so it stays out of this claim until that content exists.
+  areaServed: ['Calgary', 'Alberta'],
   knowsLanguage: ['en', 'es'],
+  openingHoursSpecification: site.openingHours.map((h) => ({ '@type': 'OpeningHoursSpecification', dayOfWeek: h.days, opens: h.opens, closes: h.closes })),
+  contactPoint: { '@type': 'ContactPoint', contactType: 'customer service', email: site.email, availableLanguage: ['English', 'Spanish'] },
   employee: team.map((p) => ({ '@type': 'Person', name: p.name, jobTitle: p.title, url: `${site.url}/about/${p.slug}`, telephone: p.phoneE164, email: p.email })),
   sameAs: Object.values(site.social),
 };
@@ -57,8 +71,13 @@ const schemas = [orgSchema, ...(schema ? (Array.isArray(schema) ? schema : [sche
     <meta property="og:image" content={new URL(ogImage, site.url).href} />
     <meta property="og:locale" content={lang === 'es' ? 'es_CA' : 'en_CA'} />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="alternate" hreflang="en-CA" href={`${site.url}/`} />
-    <link rel="alternate" hreflang="es-CA" href={`${site.url}/es`} />
+    {isTranslatedPair && (
+      <>
+        <link rel="alternate" hreflang="en-CA" href={`${site.url}/`} />
+        <link rel="alternate" hreflang="es-CA" href={`${site.url}/es`} />
+        <link rel="alternate" hreflang="x-default" href={`${site.url}/`} />
+      </>
+    )}
     <meta name="theme-color" content="#F4EFE9" />
     <script type="application/ld+json" set:html={JSON.stringify(schemas)} />
     <script is:inline>document.documentElement.classList.add('js');</script>

@@ -4,7 +4,9 @@ import Base from '../../layouts/Base.astro';
 import PersonCard from '../../components/PersonCard.astro';
 import StartBlock from '../../components/StartBlock.astro';
 import { team, brokerage, stepNames, pathCopy } from '../../data/site';
+import { breadcrumbs } from '../../lib/schema';
 import group from '../../assets/photos/team.jpg';
+const crumbs = breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Team', path: '/about' }]);
 const stepDetail = [
   'We start with what you want, not with paperwork. No jargon, no assumptions, and no pressure to decide anything on the first call.',
   'We organize your financial picture and translate it into plain terms, so you can see exactly where you stand and what would change the number.',
@@ -15,7 +17,7 @@ const stepDetail = [
   'We stay available after closing: renewals, reviews, a change in your circumstances. The file does not close when the deal does.',
 ];
 ---
-<Base title="The Team | Cristina Acosta Mortgage Team" description="Three licensed Mortgage Associates in Calgary with Enrich Mortgage Group, a Mortgage Alliance network member. How we work, the seven steps, and why clients choose us.">
+<Base title="The Team | Cristina Acosta Mortgage Team" description="Three licensed Mortgage Associates in Calgary with Enrich Mortgage Group. How we work, the seven steps, and why clients choose us." schema={crumbs}>
   <header class="head">
     <div class="container grid">
       <div>

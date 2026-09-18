@@ -1,8 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
 import CalcShell from '../../components/calc/CalcShell.astro';
+import { breadcrumbs } from '../../lib/schema';
+const crumbs = breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Calculators', path: '/calculators' }, { name: 'Renewal Savings', path: '/calculators/renewal' }]);
 ---
-<Base title="Mortgage Renewal Savings Calculator" description="Compare your lender's renewal offer against a market rate over the whole term. See the monthly difference and the total, then decide whether to switch or stay.">
+<Base title="Mortgage Renewal Savings Calculator" description="Compare your lender's renewal offer against a market rate over the whole term. See the monthly difference and the total, then decide whether to switch or stay." schema={crumbs} brand={false}>
   <CalcShell tool="renewal" eyebrow="Renewal savings" title="Is the letter a good offer?" lead="Enter the rate in your renewal letter and a rate you have seen in the market. The difference over the term is what you are deciding about. Switching at renewal has no penalty, and the new lender usually covers the transfer costs." resultLabel="Difference over the term" disclaimer="Estimate only. Rates you enter are yours; nothing here is a rate offer.">
     <Fragment slot="inputs">
       <div class="field"><label for="r-bal">Balance at renewal</label><div class="range"><input type="range" id="r-bal" min="50000" max="1500000" step="5000" value="410000" /><input class="input num" id="r-bal-n" inputmode="numeric" aria-label="Balance, typed" /></div></div>

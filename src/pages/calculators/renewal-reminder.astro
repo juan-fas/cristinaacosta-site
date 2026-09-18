@@ -1,8 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
 import RenewalCapture from '../../components/home/RenewalCapture.astro';
+import { breadcrumbs } from '../../lib/schema';
+const crumbs = breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Calculators', path: '/calculators' }, { name: 'Renewal Reminder', path: '/calculators/renewal-reminder' }]);
 ---
-<Base title="Mortgage Renewal Reminder" description="Tell us when your mortgage renews and we check your lender's offer against the market 90 days before the date. No obligation.">
+<Base title="Mortgage Renewal Reminder" description="Tell us when your mortgage renews and we check your lender's offer against the market 90 days before the date. No obligation." schema={crumbs} brand={false}>
   <header class="head"><div class="container">
     <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/calculators">Calculators</a><span aria-hidden="true">/</span><span aria-current="page">Renewal reminder</span></nav>
     <span class="eyebrow">Renewal reminder</span>

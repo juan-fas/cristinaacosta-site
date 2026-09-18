@@ -42,3 +42,17 @@
   to = "https://cristinaacosta.ca/:splat"
   status = 301
   force = true
+
+# Belt and suspenders against the old file-format build's /page.html URLs: the build no longer
+# emits them, but anything already indexed or bookmarked still resolves, cleanly, to the real page.
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/*.html"
+  to = "/:splat"
+  status = 301
+  force = true

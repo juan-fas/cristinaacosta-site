@@ -18,6 +18,7 @@ export type Situation = {
   documents: string[];
   faqs: FAQ[];
   tool?: { href: string; label: string; blurb: string };
+  guide?: { href: string; label: string };   // a matching Learn guide, linked from this page
   leadFirst?: string[];   // associate first names to list first on CTA
   verify: string[];       // QA notes, not rendered to visitors
 };
@@ -27,7 +28,7 @@ export const situations: Situation[] = [
     key: 'first', slug: 'first-time-buyers',
     title: 'Your first home, explained before you sign anything.',
     metaTitle: 'First-Time Home Buyer Mortgages in Calgary',
-    description: 'First-time buyer mortgages in Calgary and Alberta: down payment rules, the programs you can use, pre-approval, and what happens after your offer. Explained step by step.',
+    description: 'First-time buyer mortgages in Calgary and Alberta: down payment rules, programs, pre-approval and what happens after your offer.',
     eyebrow: 'First-time buyers',
     intro: 'You do not need to know how a mortgage works. You need someone who explains it as you go, tells you what you can afford before you fall for a listing, and stays on the phone after the offer is accepted.',
     who: ['You are renting and wondering whether buying is realistic yet.', 'You have savings but are not sure they count as a down payment.', 'You got a number from a bank app and do not trust it.', 'You want to understand the process, not just be told what to sign.'],
@@ -63,7 +64,7 @@ export const situations: Situation[] = [
     key: 'new', slug: 'new-to-canada',
     title: 'New to Canada? Your file deserves a lender who reads it properly.',
     metaTitle: 'Mortgages for Newcomers to Canada in Calgary',
-    description: 'Mortgages for newcomers in Calgary and Alberta on a work permit, permanent residency or recent citizenship. Which lenders accept your status, foreign income and thin credit. In English and Spanish.',
+    description: 'Mortgages for newcomers to Calgary and Alberta on a work permit, PR or citizenship. Which lenders accept your status and income, in English and Spanish.',
     eyebrow: 'New to Canada',
     intro: 'A short Canadian credit history is not a bad credit history, and income earned abroad is still income. Some lenders know that. We have been newcomers ourselves, and we know which ones.',
     who: ['You are on a work permit and were told to wait until you have PR.', 'You have PR or citizenship but only a year or two of Canadian credit.', 'Part of your down payment is coming from outside Canada.', 'You would rather go through this in Spanish.'],
@@ -92,6 +93,7 @@ export const situations: Situation[] = [
       { q: 'Do you work in Spanish?', a: 'Yes. Cristina and Juan work in Spanish and English. Documents are still in English for the lender, and we explain every one of them.' },
     ],
     tool: { href: '/calculators/readiness', label: 'Check whether you are ready', blurb: 'Five questions about status, income, savings and timing, ending in a clear next step.' },
+    guide: { href: '/learn/work-permit-mortgage', label: 'Work permit or new PR: what lenders accept' },
     leadFirst: ['Cristina', 'Juan'],
     verify: ['Newcomer program conditions: time-in-Canada limits and permit requirements for each insurer in 2026'],
   },
@@ -99,7 +101,7 @@ export const situations: Situation[] = [
     key: 'self', slug: 'self-employed',
     title: 'Your tax return is not your income. We show lenders the business behind it.',
     metaTitle: 'Self-Employed Mortgages in Calgary',
-    description: 'Self-employed mortgages in Calgary and Alberta: how lenders read your income, two-year averages and add-backs, stated-income and alternative options, and what to do after a bank declines you.',
+    description: 'Self-employed mortgages in Calgary and Alberta: how lenders read your income, two-year averaging, add-backs and alternative options.',
     eyebrow: 'Self-employed',
     intro: 'If you run a business, drive a truck, earn commission or contract, a bank often sees the smallest number on your return and stops there. A properly built file shows the whole picture, and there is a lender for almost every version of it.',
     who: ['You own a business or work for yourself and write off expenses.', 'Your income is commission, contract or seasonal.', 'You have been declined once and were not told why.', 'Your last two years look very different from each other.'],
@@ -128,6 +130,7 @@ export const situations: Situation[] = [
       { q: 'I was declined by my bank. Does that hurt my next application?', a: 'The credit check may show, but a decline itself is not recorded. What matters is why. We find out and address it before anything else is submitted.' },
     ],
     tool: { href: '/calculators/self-employed', label: 'Estimate your lender income', blurb: 'Enter two years of net income and add-backs to see the figure a lender is likely to use.' },
+    guide: { href: '/learn/self-employed-income', label: 'How lenders read self-employed income' },
     leadFirst: ['Juan'],
     verify: ['Add-back conventions currently accepted by the main insurers and lenders'],
   },
@@ -135,7 +138,7 @@ export const situations: Situation[] = [
     key: 'refi', slug: 'refinance',
     title: 'Equity is a tool. We show you the cost of each way to use it.',
     metaTitle: 'Refinance and Home Equity in Calgary',
-    description: 'Refinancing, debt consolidation, HELOCs and home equity in Calgary and Alberta. What each option costs over time, what the penalty to break your mortgage is, and when waiting is smarter.',
+    description: 'Refinancing, debt consolidation, HELOCs and home equity in Calgary and Alberta: what each option costs and when waiting is smarter.',
     eyebrow: 'Refinance and equity',
     intro: 'You can refinance, open a line of credit, or take a second mortgage. Each one costs something different, and the lower monthly payment is rarely the whole story. We put the total cost of each option beside the others and let you decide.',
     who: ['You are paying high interest on cards or loans and own a home with equity.', 'You want to renovate, help a child with a down payment, or buy a rental.', 'Your circumstances changed: separation, a new business, a change in income.', 'Your current lender offered a refinance and you want a second opinion.'],
@@ -170,7 +173,7 @@ export const situations: Situation[] = [
     key: 'renew', slug: 'renewal',
     title: 'Your renewal letter is an offer. It is not the only one.',
     metaTitle: 'Mortgage Renewal and Switch in Calgary',
-    description: 'Mortgage renewal in Calgary and Alberta: why the first offer is rarely the best, how switching lenders works, what it costs, and how to start 120 days before your date.',
+    description: 'Mortgage renewal in Calgary and Alberta: why the first offer is rarely the best, how switching works, and when to start.',
     eyebrow: 'Renewal and switch',
     intro: 'Most people sign the renewal letter because it is easy. Lenders count on that. A renewal is the one moment you can change lender with no penalty, and the market is usually better than the letter.',
     who: ['Your mortgage renews within the next twelve months.', 'You received a letter with a rate and a signature line.', 'Your income or plans changed since you first signed.', 'You want to know whether switching is worth the paperwork.'],
@@ -204,7 +207,7 @@ export const situations: Situation[] = [
     key: 'invest', slug: 'investment-properties',
     title: 'Cash flow first. Then the property.',
     metaTitle: 'Investment Property Mortgages in Calgary',
-    description: 'Rental and investment property mortgages in Calgary and Alberta: down payment rules, how lenders count rental income, using your equity, and planning the second property before the first.',
+    description: 'Investment property mortgages in Calgary and Alberta: down payment rules, how lenders count rental income, and using your equity.',
     eyebrow: 'Investment properties',
     intro: 'A rental should carry itself. Before we look at the mortgage, we look at whether the numbers work, because a lender will, and because you will be living with them for years.',
     who: ['You want to buy your first rental property.', 'You own one and want to know how the next one gets financed.', 'You are thinking of using your home’s equity as the down payment.', 'You want to keep a home you are moving out of and rent it.'],
@@ -238,7 +241,7 @@ export const situations: Situation[] = [
     key: 'commercial', slug: 'commercial',
     title: 'Commercial financing, with the right partner leading when it matters.',
     metaTitle: 'Commercial Mortgages in Calgary',
-    description: 'Commercial mortgages in Calgary and Alberta: multi-unit, mixed-use and owner-occupied premises. We assess the file, explain what commercial lenders need, and coordinate with commercial specialists.',
+    description: 'Commercial mortgages in Calgary and Alberta: multi-unit, mixed-use and owner-occupied premises, assessed and coordinated with specialists.',
     eyebrow: 'Commercial',
     intro: 'Commercial lending is its own world: different lenders, longer timelines, and underwriting built on the property’s income rather than yours. We assess the file, explain what will be asked, and bring in a commercial specialist to lead when the deal calls for one.',
     who: ['You own a business and want to buy the premises instead of renting.', 'You are looking at a five-plus unit residential building.', 'You are buying mixed-use or retail space as an investment.', 'You have been told your deal is "too commercial" for a residential mortgage.'],

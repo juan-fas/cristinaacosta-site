@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import StartBlock from '../../components/StartBlock.astro';
 import { getCollection, render } from 'astro:content';
 import { team, site } from '../../data/site';
+import { breadcrumbs } from '../../lib/schema';
 
 export async function getStaticPaths() {
   const guides = await getCollection('learn');
@@ -19,9 +20,10 @@ const schema = {
   publisher: { '@type': 'Organization', name: site.name, url: site.url },
   mainEntityOfPage: `${site.url}/learn/${g.id}`, inLanguage: 'en-CA',
 };
+const crumbs = breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Learn', path: '/learn' }, { name: g.data.title, path: `/learn/${g.id}` }]);
 const related = (await getCollection('learn')).filter((x) => x.id !== g.id).slice(0, 3);
 ---
-<Base title={g.data.title} description={g.data.description} schema={schema}>
+<Base title={g.data.title} description={g.data.description} schema={[schema, crumbs]} brand={false}>
   <!-- QA verify before launch: {g.data.verify.join(' | ')} -->
   <article class="guide">
     <header class="head"><div class="container narrow">

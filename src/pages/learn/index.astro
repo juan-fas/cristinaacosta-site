@@ -8,7 +8,7 @@ const stages = ['Before you buy', 'During your purchase', 'Owning and renewing',
 const byStage = stages.map((s) => ({ s, items: all.filter((g) => g.data.stage === s) })).filter((g) => g.items.length);
 const name = (slug: string) => team.find((p) => p.slug === slug)?.name ?? '';
 ---
-<Base title="Learn: Mortgage Guides for Alberta" description="Plain-language mortgage guides for Alberta, written and signed by licensed Mortgage Associates. Organized by where you are: before you buy, during your purchase, owning and renewing, special situations.">
+<Base title="Learn: Mortgage Guides for Alberta" description="Plain-language mortgage guides for Alberta, written and signed by licensed Mortgage Associates, organized by where you are in the process.">
   <header class="head"><div class="container">
     <span class="eyebrow">Learn</span>
     <h1>The questions from the first meeting, answered in writing.</h1>

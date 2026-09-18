@@ -1,8 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
 import CalcShell from '../../components/calc/CalcShell.astro';
+import { breadcrumbs } from '../../lib/schema';
+const crumbs = breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Calculators', path: '/calculators' }, { name: 'Payment', path: '/calculators/payment' }]);
 ---
-<Base title="Mortgage Payment Calculator (Alberta)" description="Calculate a Canadian mortgage payment with semi-annual compounding, mortgage insurance under 20% down, and optional property tax. Monthly, bi-weekly or weekly.">
+<Base title="Mortgage Payment Calculator (Alberta)" description="Calculate a Canadian mortgage payment with semi-annual compounding, mortgage insurance under 20% down, and optional property tax. Monthly, bi-weekly or weekly." schema={crumbs} brand={false}>
   <CalcShell tool="payment" eyebrow="Mortgage payment" title="What would the payment be?" lead="Canadian fixed rates compound semi-annually, and under 20% down the insurance premium is added to the loan. Both are built in. Property tax is optional because it depends on where you buy." resultLabel="Estimated payment" disclaimer="Estimate only, not an offer of credit. Excludes home insurance and condo fees.">
     <Fragment slot="inputs">
       <div class="field"><label for="p-price">Purchase price</label><div class="range"><input type="range" id="p-price" min="150000" max="2000000" step="5000" value="550000" /><input class="input num" id="p-price-n" inputmode="numeric" aria-label="Purchase price, typed" /></div></div>

@@ -1,6 +1,6 @@
 ---
-title: "Buying on a work permit or as a new permanent resident: what lenders accept"
-description: "How mortgages work for newcomers to Canada: work permit and PR eligibility, newcomer programs, what replaces a Canadian credit history, and how foreign down payments are documented."
+title: "Work permit or new PR: what lenders accept"
+description: "Mortgages for newcomers on a work permit or new PR: which lenders accept your status, foreign income and thin credit history."
 stage: "Special situations"
 author: "cristina-acosta"
 published: 2026-09-16

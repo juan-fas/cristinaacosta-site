@@ -22,7 +22,7 @@ const crumbs = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', it
 ] };
 const leadNames = s.leadFirst ?? [];
 ---
-<Base title={s.metaTitle} description={s.description} schema={[faqSchema, crumbs]}>
+<Base title={s.metaTitle} description={s.description} schema={[faqSchema, crumbs]} brand={false}>
   <!-- QA verify before launch: {s.verify.join(' | ')} -->
   <article data-situation-page={s.key}>
     <header class="head">
@@ -45,7 +45,7 @@ const leadNames = s.leadFirst ?? [];
           <ul class="checks">{s.who.map((w) => <li><Icon name="check" size={20} /><span>{w}</span></li>)}</ul>
         </div>
         <div class="tool-card" hidden={!s.tool}>
-          {s.tool && <><span class="eyebrow">Try it first</span><h2>{s.tool.label}</h2><p>{s.tool.blurb}</p><a class="btn btn-secondary" href={s.tool.href}>Open the calculator</a></>}
+          {s.tool && <><span class="eyebrow">Try it first</span><h2>{s.tool.label}</h2><p>{s.tool.blurb}</p><a class="btn btn-secondary" href={s.tool.href}>Open the calculator</a>{s.guide && <a class="btn btn-quiet" href={s.guide.href}>{s.guide.label}</a>}</>}
         </div>
       </div>
     </section>

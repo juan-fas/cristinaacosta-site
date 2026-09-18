@@ -2,6 +2,8 @@
 import Base from '../../layouts/Base.astro';
 import StartBlock from '../../components/StartBlock.astro';
 import Icon from '../../components/Icon.astro';
+import { breadcrumbs } from '../../lib/schema';
+const crumbs = breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Calculators', path: '/calculators' }, { name: 'Readiness Check', path: '/calculators/readiness' }]);
 const qs = [
   { id: 'status', q: 'Your status in Canada', opts: [['citizen', 'Citizen or permanent resident'], ['permit', 'Work permit'], ['other', 'Other or not sure']] },
   { id: 'income', q: 'How you earn', opts: [['employee', 'Employee, salaried or hourly'], ['self', 'Self-employed, contract or commission'], ['mixed', 'A mix, or between jobs']] },
@@ -11,7 +13,7 @@ const qs = [
   { id: 'when', q: 'When you would like to buy', opts: [['now', 'In the next three months'], ['year', 'Within a year'], ['later', 'More than a year away']] },
 ];
 ---
-<Base title="Am I Ready to Buy? First-Time Buyer Readiness Check" description="Six quick questions about status, income, savings, credit and timing. No score, just the right next step for a first-time buyer in Alberta.">
+<Base title="Am I Ready to Buy? First-Time Buyer Readiness Check" description="Six quick questions about status, income, savings, credit and timing. No score, just the right next step for a first-time buyer in Alberta." schema={crumbs} brand={false}>
   <article class="ready">
     <header class="head"><div class="container">
       <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/calculators">Calculators</a><span aria-hidden="true">/</span><span aria-current="page">Readiness check</span></nav>

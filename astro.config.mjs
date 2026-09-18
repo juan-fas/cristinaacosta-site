@@ -7,7 +7,9 @@ export default defineConfig({
   site: 'https://cristinaacosta.ca',
   output: 'static',
   trailingSlash: 'never',
-  build: { format: 'file', inlineStylesheets: 'auto' },
+  // 'directory' emits /page/index.html, served at the clean /page URL with no /page.html
+  // twin sitting alongside it — that twin was the source of the duplicate-URL/canonical bug.
+  build: { format: 'directory', inlineStylesheets: 'auto' },
   integrations: [
     sitemap({
       filter: (page) => !page.includes('/reviews') && !page.includes('/thanks'),

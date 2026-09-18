@@ -17,6 +17,12 @@ export const site = {
     { days: 'Monday to Friday', hours: '8 am to 8 pm' },
     { days: 'Saturday and Sunday', hours: '8 am to 1 pm' },
   ],
+  // Machine-readable twin of `hours` above, for schema.org openingHoursSpecification.
+  // Keep in sync with `hours` if the schedule changes.
+  openingHours: [
+    { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '08:00', closes: '20:00' },
+    { days: ['Saturday', 'Sunday'], opens: '08:00', closes: '13:00' },
+  ],
   responseTime: 'Usually within 30 minutes by email, faster by phone',
   languages: ['English', 'Español'],
 };

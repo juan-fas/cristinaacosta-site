@@ -1,6 +1,6 @@
 ---
 title: "Closing costs in Alberta: no land transfer tax, but not zero"
-description: "What you actually pay to close a home purchase in Alberta: land title registration fees, legal fees, title insurance, appraisal, inspection, adjustments and GST on new builds."
+description: "What you actually pay to close in Alberta: land title fees instead of a transfer tax, legal fees, title insurance, appraisal and adjustments."
 stage: "Before you buy"
 author: "cristina-acosta"
 published: 2026-09-16

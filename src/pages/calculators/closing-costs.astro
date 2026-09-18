@@ -1,8 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
 import CalcShell from '../../components/calc/CalcShell.astro';
+import { breadcrumbs } from '../../lib/schema';
+const crumbs = breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Calculators', path: '/calculators' }, { name: 'Closing Costs', path: '/calculators/closing-costs' }]);
 ---
-<Base title="Closing Costs Calculator for Alberta" description="Estimate closing costs in Alberta: land title registration fees instead of a land transfer tax, legal fees, title insurance, appraisal, inspection, adjustments and GST on new homes.">
+<Base title="Closing Costs Calculator for Alberta" description="Estimate closing costs in Alberta: land title fees instead of a transfer tax, legal fees, title insurance, appraisal and adjustments." schema={crumbs} brand={false}>
   <CalcShell tool="closing-costs" eyebrow="Closing costs in Alberta" title="No land transfer tax. Not zero either." lead="Alberta charges land title registration fees instead of a transfer tax, which is why closing here costs thousands less than in Ontario or BC. The rest is legal work, reports and adjustments. Have this cash ready on top of your down payment." resultLabel="Cash to have at closing" disclaimer="Estimate only. Legal fees and reports vary by firm and property; Alberta fee schedules are verified on the date shown and can change.">
     <Fragment slot="inputs">
       <div class="field"><label for="c-price">Purchase price</label><div class="range"><input type="range" id="c-price" min="150000" max="2000000" step="5000" value="550000" /><input class="input num" id="c-price-n" inputmode="numeric" aria-label="Purchase price, typed" /></div></div>

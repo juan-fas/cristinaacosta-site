@@ -1,8 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
 import CalcShell from '../../components/calc/CalcShell.astro';
+import { breadcrumbs } from '../../lib/schema';
+const crumbs = breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Calculators', path: '/calculators' }, { name: 'Self-Employed Income', path: '/calculators/self-employed' }]);
 ---
-<Base title="Self-Employed Mortgage Income Estimator" description="Estimate the income a lender is likely to use if you are self-employed in Alberta: two-year averaging, the lower-year rule when income falls, and eligible add-backs.">
+<Base title="Self-Employed Mortgage Income Estimator" description="Estimate the income a lender will use if you are self-employed in Alberta: two-year averaging, the lower-year rule and eligible add-backs." schema={crumbs} brand={false}>
   <CalcShell tool="self-employed" eyebrow="Self-employed income" title="What income will a lender actually use?" lead="Prime lenders average your last two years of net income and may add back certain expenses. If the latest year fell sharply, they use the lower year. This estimate shows both, and what a stated-income program might accept instead." resultLabel="Income a prime lender is likely to use" disclaimer="Estimate only. Add-back rules and stated-income programs differ by lender and by insurer.">
     <Fragment slot="inputs">
       <div class="two">

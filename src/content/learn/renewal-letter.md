@@ -1,6 +1,6 @@
 ---
 title: "Your renewal letter: what to do 120 days before"
-description: "Why the first renewal offer is rarely the best one, how switching lenders works without a penalty, what it costs, and the timeline to follow starting 120 days out."
+description: "Why the first renewal offer is rarely the best, how switching lenders works without a penalty, and the 120-day timeline to follow."
 stage: "Owning and renewing"
 author: "sheryl-beaver"
 published: 2026-09-16

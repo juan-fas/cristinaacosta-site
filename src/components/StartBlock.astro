@@ -1,14 +1,14 @@
 ---
 import Icon from './Icon.astro';
 import { team, whatsapp } from '../data/site';
-interface Props { title?: string; lead?: string }
-const { title = 'Ready when you are.', lead = 'Choose who you would like to talk to, then how. A first conversation costs nothing and commits you to nothing.' } = Astro.props;
+interface Props { title?: string; lead?: string; as?: 'h1' | 'h2' }
+const { title = 'Ready when you are.', lead = 'Choose who you would like to talk to, then how. A first conversation costs nothing and commits you to nothing.', as = 'h2' } = Astro.props;
 ---
 <section class="section start" aria-labelledby="start-title">
   <div class="container">
     <div class="section-head">
       <span class="eyebrow">Start</span>
-      <h2 id="start-title">{title}</h2>
+      {as === 'h1' ? <h1 id="start-title">{title}</h1> : <h2 id="start-title">{title}</h2>}
       <p class="lead">{lead}</p>
     </div>
     <div class="grid">

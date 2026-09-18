@@ -1,6 +1,6 @@
 ---
 title: "Self-employed: how lenders read your income"
-description: "Two-year averaging, the lower-year rule, add-backs, stated-income programs and alternative lenders. How mortgage lenders turn a self-employed tax return into a number they will lend against."
+description: "How lenders read self-employed income: two-year averaging, the lower-year rule, add-backs, stated-income programs and alternative lenders."
 stage: "Special situations"
 author: "juan-acosta"
 published: 2026-09-16
