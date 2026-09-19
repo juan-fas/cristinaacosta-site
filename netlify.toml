@@ -43,16 +43,6 @@
   status = 301
   force = true
 
-# Belt and suspenders against the old file-format build's /page.html URLs: the build no longer
-# emits them, but anything already indexed or bookmarked still resolves, cleanly, to the real page.
-[[redirects]]
-  from = "/index.html"
-  to = "/"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/*.html"
-  to = "/:splat"
-  status = 301
-  force = true
+# The redirects that send every /page.html to its clean /page URL are generated at build time
+# (scripts-redirects.mjs writes them into dist/_redirects) — Netlify has no wildcard that matches
+# a suffix like "*.html", only a trailing "/prefix/*" splat, so a single rule here can't do it.
