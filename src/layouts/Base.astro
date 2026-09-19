@@ -21,7 +21,11 @@ interface Props {
   brand?: boolean;
 }
 const { title, description, lang = 'en', ogImage = '/og/default.png', noindex = false, schema, bodyClass = '', brand = true } = Astro.props;
-const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', site.url).href;
+// The 'file' build format (chosen so Netlify serves clean URLs with no forced trailing slash —
+// see astro.config.mjs) means Astro.url.pathname is the literal output filename, e.g.
+// "/mortgages/refinance.html". Strip that down to the clean URL Netlify actually serves.
+const cleanPath = Astro.url.pathname.replace(/(?:^|\/)index\.html$/, '/').replace(/\.html$/, '').replace(/\/$/, '') || '/';
+const canonical = new URL(cleanPath, site.url).href;
 const canonicalPath = canonical.replace(site.url, '') || '/';
 const fullTitle = title.includes('Cristina Acosta') ? title : brand ? `${title} | Cristina Acosta Mortgage Team` : title;
 // Reciprocal hreflang only exists for the home page and its true Spanish counterpart /es.

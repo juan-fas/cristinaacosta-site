@@ -7,9 +7,11 @@ export default defineConfig({
   site: 'https://cristinaacosta.ca',
   output: 'static',
   trailingSlash: 'never',
-  // 'directory' emits /page/index.html, served at the clean /page URL with no /page.html
-  // twin sitting alongside it — that twin was the source of the duplicate-URL/canonical bug.
-  build: { format: 'directory', inlineStylesheets: 'auto' },
+  // 'file' emits /page.html, which Netlify serves at the clean extensionless /page URL
+  // (and, unlike 'directory' output, with no forced trailing-slash redirect on that URL).
+  // The /page.html file itself stays reachable too — that's the real duplicate-URL bug,
+  // and it's fixed at the host layer instead, by the /*.html redirect in netlify.toml.
+  build: { format: 'file', inlineStylesheets: 'auto' },
   integrations: [
     sitemap({
       filter: (page) => !page.includes('/reviews') && !page.includes('/thanks'),
